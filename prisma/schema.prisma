@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Milestone 1: Expert Discovery ───────────────────────────────────────────
+
+model Expert {
+  id            String       @id @default(cuid())
+  clerkUserId   String
+  canonicalName String
+  domain        String?
+  bio           String?
+  status        ExpertStatus @default(DRAFT)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  aliases         ExpertAlias[]
+  sourceEndpoints SourceEndpoint[]
+  discoveryRuns   DiscoveryRun[]
+
+  @@index([clerkUserId])
+}
+
+model ExpertAlias {
+  id       String  @id @default(cuid())
+  expertId String
+  alias    String
+  context  String?
+
+  expert Expert @relation(fields: [expertId], references: [id], onDelete: Cascade)
+
+  @@index([expertId])
+}
+
+model SourceEndpoint {
+  id               String           @id @default(cuid())
+  expertId         String
+  url              String
+  label            String?
+  sourceType       SourceType
+  tier             SourceTier       @default(SECONDARY)
+  authorityScore   Float            @default(0.0)
+  relevanceScore   Float            @default(0.0)
+  complianceStatus ComplianceStatus @default(PENDING)
+  complianceNote   String?
+  robotsChecked    Boolean          @default(false)
+  robotsAllowed    Boolean?
+  priorityScore    Float            @default(0.0)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  expert        Expert               @relation(fields: [expertId], references: [id], onDelete: Cascade)
+  policyProfile SourcePolicyProfile?
+
+  @@index([expertId])
+}
+
+model SourcePolicyProfile {
+  id               String   @id @default(cuid())
+  sourceEndpointId String   @unique
+  apiAvailable     Boolean  @default(false)
+  apiName          String?
+  robotsTxtUrl     String?
+  robotsDisallow   String[]
+  rateLimit        String?
+  licenseType      String?
+  contentRetention String?
+  notes            String?
+  checkedAt        DateTime @default(now())
+
+  sourceEndpoint SourceEndpoint @relation(fields: [sourceEndpointId], references: [id], onDelete: Cascade)
+}
+
+model DiscoveryRun {
+  id           String          @id @default(cuid())
+  expertId     String
+  status       DiscoveryStatus @default(RUNNING)
+  sourcesFound Int             @default(0)
+  log          String[]
+  startedAt    DateTime        @default(now())
+  completedAt  DateTime?
+
+  expert Expert @relation(fields: [expertId], references: [id], onDelete: Cascade)
+
+  @@index([expertId])
+}
+
+enum ExpertStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum SourceType {
+  YOUTUBE_CHANNEL
+  YOUTUBE_VIDEO
+  WEBSITE
+  BLOG
+  RSS_FEED
+  PODCAST
+  COURSE_PORTAL
+  SOCIAL_PROFILE
+  BOOK
+  OTHER
+}
+
+enum SourceTier {
+  OFFICIAL
+  FIRST_PARTY
+  SECONDARY
+  TERTIARY
+}
+
+enum ComplianceStatus {
+  PENDING
+  ALLOWED
+  DISALLOWED
+  REQUIRES_REVIEW
+}
+
+enum DiscoveryStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+}
