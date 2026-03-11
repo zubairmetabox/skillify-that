@@ -1,4 +1,5 @@
 import Groq from "groq-sdk";
+export { DEFAULT_MODEL, SELECTABLE_MODELS } from "./groq-models";
 
 export const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -6,6 +7,6 @@ export const groq = new Groq({
 
 export const GROQ_MODELS = {
   fast: "llama-3.1-8b-instant",
-  balanced: "llama-3.3-70b-versatile",
-  reasoning: "deepseek-r1-distill-llama-70b",
+  balanced: "groq/compound",
+  reasoning: "groq/compound",
 } as const;

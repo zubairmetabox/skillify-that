@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -13,6 +11,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
+import { CheckCircle, Clock, XCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 import type { SourceEndpoint, SourcePolicyProfile } from "@prisma/client";
 
 type Source = SourceEndpoint & { policyProfile: SourcePolicyProfile | null };
@@ -25,17 +25,65 @@ type Props = {
   onUpdate: () => Promise<void>;
 };
 
+const COMPLIANCE_STEPS = [
+  {
+    value: "ALLOWED",
+    icon: CheckCircle,
+    active: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400",
+    hover: "hover:bg-emerald-50 dark:hover:bg-emerald-900/20",
+  },
+  {
+    value: "PENDING",
+    icon: Clock,
+    active: "bg-muted text-muted-foreground",
+    hover: "hover:bg-muted/60",
+  },
+  {
+    value: "DISALLOWED",
+    icon: XCircle,
+    active: "bg-destructive/10 text-destructive dark:bg-destructive/20",
+    hover: "hover:bg-destructive/5 dark:hover:bg-destructive/10",
+  },
+] as const;
+
+function ComplianceToggle({
+  sourceId,
+  current,
+  disabled,
+  onSelect,
+}: {
+  sourceId: string;
+  current: string;
+  disabled: boolean;
+  onSelect: (value: string) => void;
+}) {
+  return (
+    <div className="inline-flex items-center gap-0.5 rounded-full border border-border bg-background p-1">
+      {COMPLIANCE_STEPS.map(({ value, icon: Icon, active, hover }) => {
+        const isActive = current === value;
+        return (
+          <button
+            key={value}
+            disabled={disabled}
+            onClick={() => !isActive && onSelect(value)}
+            title={value}
+            className={cn(
+              "flex items-center justify-center rounded-full p-1.5 transition-colors disabled:opacity-40",
+              isActive ? active : cn("text-muted-foreground/40", hover)
+            )}
+          >
+            <Icon className="size-3.5" />
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export function SourceTable({ sources, expertId, tierColors, complianceColors, onUpdate }: Props) {
   const [updating, setUpdating] = useState<string | null>(null);
 
-  async function toggleCompliance(source: Source) {
-    const next =
-      source.complianceStatus === "ALLOWED"
-        ? "DISALLOWED"
-        : source.complianceStatus === "DISALLOWED"
-          ? "PENDING"
-          : "ALLOWED";
-
+  async function setCompliance(source: Source, next: string) {
     setUpdating(source.id);
     try {
       const res = await fetch(
@@ -47,7 +95,7 @@ export function SourceTable({ sources, expertId, tierColors, complianceColors, o
         }
       );
       if (!res.ok) throw new Error("Failed");
-      toast.success(`Compliance updated to ${next}`);
+      toast.success(`Set to ${next}`);
       await onUpdate();
     } catch {
       toast.error("Failed to update compliance");
@@ -67,7 +115,7 @@ export function SourceTable({ sources, expertId, tierColors, complianceColors, o
               <TableHead>Tier</TableHead>
               <TableHead>Priority</TableHead>
               <TableHead>Compliance</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -75,14 +123,14 @@ export function SourceTable({ sources, expertId, tierColors, complianceColors, o
               <TableRow key={source.id}>
                 <TableCell className="max-w-xs">
                   <div>
-                    <p className="font-medium text-sm text-zinc-800 truncate">
+                    <p className="font-medium text-sm text-foreground truncate">
                       {source.label ?? source.url}
                     </p>
                     <a
                       href={source.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-blue-500 hover:underline truncate block"
+                      className="text-xs text-primary hover:underline truncate block"
                     >
                       {source.url.length > 60
                         ? source.url.slice(0, 60) + "..."
@@ -91,46 +139,43 @@ export function SourceTable({ sources, expertId, tierColors, complianceColors, o
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span className="text-xs text-zinc-500">
+                  <span className="text-xs text-muted-foreground">
                     {source.sourceType.replace(/_/g, " ")}
                   </span>
                 </TableCell>
                 <TableCell>
                   <span
-                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${tierColors[source.tier] ?? "bg-zinc-100 text-zinc-500"}`}
+                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${tierColors[source.tier] ?? "bg-muted text-muted-foreground"}`}
                   >
                     {source.tier}
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm font-medium text-zinc-700">
+                  <span className="text-sm font-medium text-foreground">
                     {source.priorityScore.toFixed(2)}
                   </span>
                 </TableCell>
                 <TableCell>
                   <div className="space-y-0.5">
                     <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${complianceColors[source.complianceStatus] ?? "bg-zinc-100"}`}
+                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${complianceColors[source.complianceStatus] ?? "bg-muted"}`}
                     >
                       {source.complianceStatus}
                     </span>
                     {source.complianceNote && (
-                      <p className="text-xs text-zinc-400 max-w-[180px] truncate">
+                      <p className="text-xs text-muted-foreground/70 max-w-[180px] truncate">
                         {source.complianceNote}
                       </p>
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="text-right">
-                  <Button
-                    size="sm"
-                    variant="ghost"
+                <TableCell>
+                  <ComplianceToggle
+                    sourceId={source.id}
+                    current={source.complianceStatus}
                     disabled={updating === source.id}
-                    onClick={() => toggleCompliance(source)}
-                    className="text-xs"
-                  >
-                    {updating === source.id ? "..." : "Toggle"}
-                  </Button>
+                    onSelect={(next) => setCompliance(source, next)}
+                  />
                 </TableCell>
               </TableRow>
             ))}

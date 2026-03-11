@@ -1,4 +1,5 @@
 import { groq, GROQ_MODELS } from "@/lib/groq";
+import { trackGroqUsage } from "@/lib/groq-usage";
 
 export type IdentityResolution = {
   canonicalName: string;
@@ -47,6 +48,7 @@ Be conservative — only include what you are highly confident about for this sp
       response_format: { type: "json_object" },
     });
 
+    trackGroqUsage(completion.usage?.total_tokens ?? 0);
     const content = completion.choices[0]?.message?.content ?? "{}";
     const parsed = JSON.parse(content) as Partial<IdentityResolution>;
 

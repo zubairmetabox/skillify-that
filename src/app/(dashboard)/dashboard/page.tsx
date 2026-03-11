@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
@@ -8,9 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { ExpertStatus } from "@prisma/client";
 
 const statusColors: Record<ExpertStatus, string> = {
-  DRAFT: "bg-zinc-100 text-zinc-600",
-  ACTIVE: "bg-green-100 text-green-700",
-  ARCHIVED: "bg-red-100 text-red-600",
+  DRAFT: "bg-muted text-muted-foreground",
+  ACTIVE: "bg-accent text-accent-foreground",
+  ARCHIVED: "bg-destructive/10 text-destructive",
 };
 
 export default async function DashboardPage() {
@@ -31,8 +31,8 @@ export default async function DashboardPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900">Expert Atlases</h1>
-          <p className="mt-1 text-sm text-zinc-500">
+          <h1 className="text-2xl font-bold text-foreground">Expert Atlases</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             Each expert profile runs through the full discovery pipeline.
           </p>
         </div>
@@ -44,7 +44,7 @@ export default async function DashboardPage() {
       {experts.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="flex flex-col items-center gap-4 py-16 text-center">
-            <p className="text-zinc-400">No experts yet.</p>
+            <p className="text-muted-foreground">No experts yet.</p>
             <Link href="/experts/new">
               <Button variant="outline">Create your first expert profile</Button>
             </Link>
@@ -63,7 +63,7 @@ export default async function DashboardPage() {
                 <Card className="h-full cursor-pointer transition-shadow hover:shadow-md">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="text-base font-semibold leading-tight text-zinc-900">
+                      <CardTitle className="text-base font-semibold leading-tight text-card-foreground">
                         {expert.canonicalName}
                       </CardTitle>
                       <span
@@ -78,13 +78,13 @@ export default async function DashboardPage() {
                       </Badge>
                     )}
                   </CardHeader>
-                  <CardContent className="space-y-2 text-sm text-zinc-500">
+                  <CardContent className="space-y-2 text-sm text-muted-foreground">
                     <p>
-                      <span className="font-medium text-zinc-700">
+                      <span className="font-medium text-foreground">
                         {expert.sourceEndpoints.length}
                       </span>{" "}
                       sources discovered ·{" "}
-                      <span className="font-medium text-green-600">
+                      <span className="font-medium text-primary">
                         {allowedSources}
                       </span>{" "}
                       approved
@@ -95,10 +95,10 @@ export default async function DashboardPage() {
                         <span
                           className={
                             latestRun.status === "COMPLETED"
-                              ? "text-green-600"
+                              ? "text-primary"
                               : latestRun.status === "FAILED"
-                                ? "text-red-500"
-                                : "text-blue-500"
+                                ? "text-destructive"
+                                : "text-accent-foreground"
                           }
                         >
                           {latestRun.status}
@@ -106,7 +106,7 @@ export default async function DashboardPage() {
                       </p>
                     )}
                     {expert.aliases.length > 0 && (
-                      <p className="truncate text-xs text-zinc-400">
+                      <p className="truncate text-xs text-muted-foreground/70">
                         Also known as: {expert.aliases.map((a) => a.alias).join(", ")}
                       </p>
                     )}

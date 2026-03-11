@@ -21,6 +21,12 @@ model Expert {
   aliases         ExpertAlias[]
   sourceEndpoints SourceEndpoint[]
   discoveryRuns   DiscoveryRun[]
+  ingestionRuns   IngestionRun[]
+  contentRecords  ContentRecord[]
+  skillAtoms      SkillAtom[]
+  skillAtlases    SkillAtlas[]
+  skillClusters   SkillCluster[]
+  skillPackages   SkillPackage[]
 
   @@index([clerkUserId])
 }
@@ -53,8 +59,9 @@ model SourceEndpoint {
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
-  expert        Expert               @relation(fields: [expertId], references: [id], onDelete: Cascade)
-  policyProfile SourcePolicyProfile?
+  expert         Expert               @relation(fields: [expertId], references: [id], onDelete: Cascade)
+  policyProfile  SourcePolicyProfile?
+  contentRecords ContentRecord[]
 
   @@index([expertId])
 }
@@ -126,4 +133,183 @@ enum DiscoveryStatus {
   RUNNING
   COMPLETED
   FAILED
+}
+
+// ─── Milestone 2: Ingestion + Atom Mining ────────────────────────────────────
+
+model IngestionRun {
+  id               String          @id @default(cuid())
+  expertId         String
+  status           IngestionStatus @default(RUNNING)
+  sourcesProcessed Int             @default(0)
+  recordsCreated   Int             @default(0)
+  atomsExtracted   Int             @default(0)
+  log              String[]
+  startedAt        DateTime        @default(now())
+  completedAt      DateTime?
+
+  expert         Expert          @relation(fields: [expertId], references: [id], onDelete: Cascade)
+  contentRecords ContentRecord[]
+
+  @@index([expertId])
+}
+
+model ContentRecord {
+  id               String    @id @default(cuid())
+  expertId         String
+  sourceEndpointId String
+  ingestionRunId   String?
+  title            String?
+  url              String
+  rawText          String
+  wordCount        Int       @default(0)
+  contentType      String
+  publishedAt      DateTime?
+  ingestedAt       DateTime  @default(now())
+
+  expert         Expert          @relation(fields: [expertId], references: [id], onDelete: Cascade)
+  sourceEndpoint SourceEndpoint  @relation(fields: [sourceEndpointId], references: [id], onDelete: Cascade)
+  ingestionRun   IngestionRun?   @relation(fields: [ingestionRunId], references: [id])
+  atoms          SkillAtom[]
+
+  @@index([expertId])
+  @@index([sourceEndpointId])
+}
+
+model SkillAtom {
+  id               String           @id @default(cuid())
+  expertId         String
+  contentRecordId  String
+  clusterId        String?
+  atomType         AtomType
+  title            String
+  body             String
+  domain           String?
+  tags             String[]
+  attributionLevel AttributionLevel
+  evidenceStrength Float            @default(0.5)
+  domainRelevance  Float            @default(0.5)
+  sourceUrl        String
+  sourceQuote      String?
+  createdAt        DateTime         @default(now())
+
+  expert        Expert        @relation(fields: [expertId], references: [id], onDelete: Cascade)
+  contentRecord ContentRecord @relation(fields: [contentRecordId], references: [id], onDelete: Cascade)
+  cluster       SkillCluster? @relation(fields: [clusterId], references: [id])
+
+  @@index([expertId])
+  @@index([contentRecordId])
+  @@index([clusterId])
+}
+
+// ─── Milestone 3: Atlas Synthesis ────────────────────────────────────────────
+
+model SkillAtlas {
+  id            String   @id @default(cuid())
+  expertId      String
+  domain        String
+  title         String
+  coverageScore Float    @default(0)
+  atomCount     Int      @default(0)
+  clusterCount  Int      @default(0)
+  packageCount  Int      @default(0)
+  gaps          String[]
+  buildStatus   String   @default("RUNNING")
+  buildLog      String[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  expert   Expert         @relation(fields: [expertId], references: [id], onDelete: Cascade)
+  clusters SkillCluster[]
+  packages SkillPackage[]
+
+  @@index([expertId])
+}
+
+model SkillCluster {
+  id          String   @id @default(cuid())
+  expertId    String
+  atlasId     String
+  name        String
+  description String?
+  domain      String?
+  atomCount   Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  expert   Expert         @relation(fields: [expertId], references: [id], onDelete: Cascade)
+  atlas    SkillAtlas     @relation(fields: [atlasId], references: [id], onDelete: Cascade)
+  atoms    SkillAtom[]
+  packages SkillPackage[]
+
+  @@index([expertId])
+  @@index([atlasId])
+}
+
+model SkillPackage {
+  id              String       @id @default(cuid())
+  expertId        String
+  clusterId       String
+  atlasId         String
+  name            String
+  trigger         String
+  steps           Json
+  examples        Json
+  antiPatterns    Json
+  evidenceSummary String
+  releaseState    ReleaseState @default(DRAFT)
+  coverageScore   Float        @default(0)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  expert  Expert       @relation(fields: [expertId], references: [id], onDelete: Cascade)
+  cluster SkillCluster @relation(fields: [clusterId], references: [id], onDelete: Cascade)
+  atlas   SkillAtlas   @relation(fields: [atlasId], references: [id], onDelete: Cascade)
+
+  @@index([expertId])
+  @@index([clusterId])
+  @@index([atlasId])
+}
+
+enum ReleaseState {
+  DRAFT
+  REVIEWED
+  APPROVED
+  DEPRECATED
+}
+
+enum IngestionStatus {
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+enum AtomType {
+  PRINCIPLE
+  TACTIC
+  SCRIPT
+  FRAMEWORK
+  DIAGNOSTIC
+  OBJECTION_RESPONSE
+  WORKFLOW
+  INSIGHT
+}
+
+enum AttributionLevel {
+  L1_DIRECT
+  L2_FIRST_PARTY
+  L3_SECONDARY
+}
+
+// ─── Groq Usage Tracking ──────────────────────────────────────────────────────
+
+model GroqUsage {
+  date         String @id  // YYYY-MM-DD
+  tokensUsed   Int    @default(0)
+  requestCount Int    @default(0)
+}
+
+model UserSettings {
+  clerkUserId    String   @id
+  preferredModel String   @default("llama-3.1-8b-instant")
+  updatedAt      DateTime @updatedAt
 }

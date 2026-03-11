@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import type { DiscoveryRun } from "@prisma/client";
 
 const statusColors = {
-  RUNNING: "text-blue-500",
-  COMPLETED: "text-green-600",
-  FAILED: "text-red-500",
+  RUNNING: "text-primary",
+  COMPLETED: "text-accent-foreground",
+  FAILED: "text-destructive",
 };
 
 export function DiscoveryLog({ run }: { run: DiscoveryRun }) {
@@ -21,29 +21,27 @@ export function DiscoveryLog({ run }: { run: DiscoveryRun }) {
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span
-              className={`text-sm font-semibold ${statusColors[run.status]}`}
-            >
+            <span className={`text-sm font-semibold ${statusColors[run.status]}`}>
               {run.status}
             </span>
-            <span className="text-xs text-zinc-400">
+            <span className="text-xs text-muted-foreground">
               {new Date(run.startedAt).toLocaleString()}
             </span>
             {run.status === "COMPLETED" && (
-              <span className="text-xs text-zinc-500">
+              <span className="text-xs text-muted-foreground">
                 {run.sourcesFound} sources found
               </span>
             )}
           </div>
-          <span className="text-xs text-zinc-400">{expanded ? "▲" : "▼"}</span>
+          <span className="text-xs text-muted-foreground">{expanded ? "▲" : "▼"}</span>
         </div>
       </CardHeader>
 
       {expanded && (
         <CardContent>
-          <div className="rounded-lg bg-zinc-950 p-4 font-mono text-xs text-green-400 space-y-1 max-h-64 overflow-y-auto">
+          <div className="rounded-lg bg-sidebar p-4 font-mono text-xs text-sidebar-foreground space-y-1 max-h-64 overflow-y-auto">
             {run.log.length === 0 ? (
-              <p className="text-zinc-500">No log entries</p>
+              <p className="text-sidebar-foreground/50">No log entries</p>
             ) : (
               run.log.map((line, i) => (
                 <p key={i} className="leading-relaxed">
