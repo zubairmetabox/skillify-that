@@ -7,19 +7,26 @@ export function NavigationProgress() {
   const pathname = usePathname();
   const [width, setWidth] = useState(0);
   const [visible, setVisible] = useState(false);
-  // Track whether a navigation was started so we don't fire on initial mount
   const navigating = useRef(false);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  function clearTimers() {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+  }
 
   // Complete the bar when the pathname changes (navigation landed)
   useEffect(() => {
     if (!navigating.current) return;
     navigating.current = false;
+    clearTimers();
     setWidth(100);
     const done = setTimeout(() => {
       setVisible(false);
       setWidth(0);
     }, 250);
-    return () => clearTimeout(done);
+    timers.current.push(done);
+    return clearTimers;
   }, [pathname]);
 
   // Detect link clicks to start the bar
@@ -36,17 +43,19 @@ export function NavigationProgress() {
         href.startsWith("tel:")
       ) return;
       if (href === window.location.pathname) return;
+      clearTimers();
       navigating.current = true;
       setVisible(true);
       setWidth(35);
-      setTimeout(() => setWidth(60), 200);
-      setTimeout(() => setWidth(80), 700);
+      const t1 = setTimeout(() => setWidth(60), 200);
+      const t2 = setTimeout(() => setWidth(80), 700);
+      timers.current.push(t1, t2);
     }
     document.addEventListener("click", onLinkClick);
     return () => document.removeEventListener("click", onLinkClick);
   }, []);
 
-  if (!visible && width === 0) return null;
+  if (!visible) return null;
 
   return (
     <div
