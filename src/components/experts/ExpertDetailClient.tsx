@@ -112,6 +112,9 @@ export function ExpertDetailClient({ expert: initialExpert }: { expert: ExpertFu
   });
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
+  const [savingNotes, setSavingNotes] = useState<Record<string, boolean>>({});
+  const [reviewNotesDraft, setReviewNotesDraft] = useState<Record<string, string>>({});
   const [ingestionConfig, setIngestionConfig] = useState(() => {
     try {
       const saved = localStorage.getItem("skillify:ingestionConfig");
@@ -382,6 +385,33 @@ export function ExpertDetailClient({ expert: initialExpert }: { expert: ExpertFu
     } catch {
       setModal((m) => ({ ...m, status: "failed", log: [...m.log, "✗ Network error"], summary: "Network error." }));
     }
+  }
+
+  async function runValidation() {
+    if (!atlas) return;
+    setIsValidating(true);
+    try {
+      const res = await fetch(`/api/atlas/${atlas.id}/validate`, { method: "POST" });
+      const d = await res.json();
+      if (!res.ok) { toast.error(d.error ?? "Validation failed"); return; }
+      await loadAtlasData();
+      toast.success("Validation complete");
+    } catch {
+      toast.error("Network error running validation");
+    } finally {
+      setIsValidating(false);
+    }
+  }
+
+  async function updatePackage(pkgId: string, patch: { releaseState?: string; reviewNotes?: string }) {
+    if (!atlas) return;
+    const res = await fetch(`/api/atlas/${atlas.id}/packages/${pkgId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patch),
+    });
+    if (!res.ok) { toast.error("Failed to update package"); return; }
+    await loadAtlasData();
   }
 
   const isBuildingAtlas = modal.status === "running" && modal.title.includes("Atlas");
@@ -811,6 +841,29 @@ export function ExpertDetailClient({ expert: initialExpert }: { expert: ExpertFu
                           >
                             Export .md
                           </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={runValidation}
+                            disabled={isValidating}
+                          >
+                            {isValidating ? "Validating..." : "Run Validation"}
+                          </Button>
+                          {atlas.validationStatus && (
+                            <Badge
+                              className={
+                                atlas.validationStatus === "PASSED"
+                                  ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                                  : atlas.validationStatus === "FAILED"
+                                    ? "bg-destructive/10 text-destructive"
+                                    : atlas.validationStatus === "PARTIAL"
+                                      ? "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400"
+                                      : "bg-muted text-muted-foreground"
+                              }
+                            >
+                              {atlas.validationStatus}
+                            </Badge>
+                          )}
                         </div>
                       </div>
                       {atlas.gaps.length > 0 && (
@@ -821,6 +874,20 @@ export function ExpertDetailClient({ expert: initialExpert }: { expert: ExpertFu
                               <li key={i} className="text-xs text-muted-foreground">• {gap}</li>
                             ))}
                           </ul>
+                        </div>
+                      )}
+                      {atlas.atlasValidationNotes && (
+                        <div className="mt-3 rounded-lg bg-orange-50 dark:bg-orange-900/10 border border-orange-200/50 p-3">
+                          <details>
+                            <summary className="text-xs font-medium text-orange-700 dark:text-orange-400 cursor-pointer">
+                              Cross-package issues
+                            </summary>
+                            <ul className="mt-2 space-y-0.5">
+                              {atlas.atlasValidationNotes.split("\n").filter(Boolean).map((note, i) => (
+                                <li key={i} className="text-xs text-orange-700/80 dark:text-orange-400/80">• {note}</li>
+                              ))}
+                            </ul>
+                          </details>
                         </div>
                       )}
                     </CardContent>
@@ -845,7 +912,22 @@ export function ExpertDetailClient({ expert: initialExpert }: { expert: ExpertFu
                             <Card key={pkg.id}>
                               <CardContent className="pt-4 space-y-3">
                                 <div className="flex items-start justify-between gap-3">
-                                  <p className="font-semibold text-sm text-foreground">{pkg.name}</p>
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <p className="font-semibold text-sm text-foreground">{pkg.name}</p>
+                                    <Badge
+                                      className={`text-[10px] shrink-0 ${
+                                        pkg.releaseState === "APPROVED"
+                                          ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                                          : pkg.releaseState === "REVIEWED"
+                                            ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                                            : pkg.releaseState === "DEPRECATED"
+                                              ? "bg-destructive/10 text-destructive"
+                                              : "bg-muted text-muted-foreground"
+                                      }`}
+                                    >
+                                      {pkg.releaseState}
+                                    </Badge>
+                                  </div>
                                   <div className="flex items-center gap-2 shrink-0">
                                     <span className="text-xs text-muted-foreground">
                                       {(pkg.coverageScore * 100).toFixed(0)}% coverage
@@ -913,6 +995,88 @@ export function ExpertDetailClient({ expert: initialExpert }: { expert: ExpertFu
 
                                 {pkg.evidenceSummary && (
                                   <p className="text-xs text-muted-foreground/60 italic">{pkg.evidenceSummary}</p>
+                                )}
+
+                                {((pkg.validationErrors?.length ?? 0) > 0 || (pkg.validationWarnings?.length ?? 0) > 0) && (
+                                  <div className="rounded border border-border bg-muted/20 p-2.5 space-y-1.5">
+                                    <details open={(pkg.validationErrors?.length ?? 0) > 0}>
+                                      <summary className="text-xs font-medium text-muted-foreground cursor-pointer">
+                                        Validation ({pkg.validationErrors?.length ?? 0} errors, {pkg.validationWarnings?.length ?? 0} warnings)
+                                      </summary>
+                                      <div className="mt-1.5 space-y-1">
+                                        {(pkg.validationErrors ?? []).map((e, i) => (
+                                          <p key={i} className="text-xs text-destructive">✗ {e}</p>
+                                        ))}
+                                        {(pkg.validationWarnings ?? []).map((w, i) => (
+                                          <p key={i} className="text-xs text-orange-600 dark:text-orange-400">⚠ {w}</p>
+                                        ))}
+                                      </div>
+                                    </details>
+                                  </div>
+                                )}
+
+                                {atlas.validationStatus && (
+                                  <div className="pt-1.5 border-t border-border/50 space-y-2">
+                                    <div className="flex items-center gap-2 flex-wrap">
+                                      {pkg.releaseState !== "APPROVED" && (
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          className="h-6 px-2 text-xs text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                                          onClick={() => updatePackage(pkg.id, { releaseState: "APPROVED" })}
+                                        >
+                                          Approve
+                                        </Button>
+                                      )}
+                                      {pkg.releaseState !== "REVIEWED" && pkg.releaseState !== "APPROVED" && (
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          className="h-6 px-2 text-xs text-blue-600 hover:bg-blue-50"
+                                          onClick={() => updatePackage(pkg.id, { releaseState: "REVIEWED" })}
+                                        >
+                                          Mark Reviewed
+                                        </Button>
+                                      )}
+                                      {pkg.releaseState !== "DEPRECATED" && (
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          className="h-6 px-2 text-xs text-destructive hover:bg-destructive/10"
+                                          onClick={() => updatePackage(pkg.id, { releaseState: "DEPRECATED" })}
+                                        >
+                                          Deprecate
+                                        </Button>
+                                      )}
+                                    </div>
+                                    <div className="space-y-1">
+                                      <textarea
+                                        placeholder="Reviewer notes (optional)..."
+                                        className="w-full rounded border border-border bg-background px-2 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/50 resize-none focus:outline-none focus:ring-1 focus:ring-ring"
+                                        rows={2}
+                                        value={reviewNotesDraft[pkg.id] ?? pkg.reviewNotes ?? ""}
+                                        onChange={(e) =>
+                                          setReviewNotesDraft((prev) => ({ ...prev, [pkg.id]: e.target.value }))
+                                        }
+                                      />
+                                      {(reviewNotesDraft[pkg.id] !== undefined &&
+                                        reviewNotesDraft[pkg.id] !== (pkg.reviewNotes ?? "")) && (
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          className="h-6 px-2 text-xs"
+                                          disabled={savingNotes[pkg.id]}
+                                          onClick={async () => {
+                                            setSavingNotes((prev) => ({ ...prev, [pkg.id]: true }));
+                                            await updatePackage(pkg.id, { reviewNotes: reviewNotesDraft[pkg.id] });
+                                            setSavingNotes((prev) => ({ ...prev, [pkg.id]: false }));
+                                          }}
+                                        >
+                                          {savingNotes[pkg.id] ? "Saving..." : "Save Notes"}
+                                        </Button>
+                                      )}
+                                    </div>
+                                  </div>
                                 )}
                               </CardContent>
                             </Card>

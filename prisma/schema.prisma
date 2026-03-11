@@ -214,9 +214,11 @@ model SkillAtlas {
   clusterCount  Int      @default(0)
   packageCount  Int      @default(0)
   gaps          String[]
-  buildStatus   String   @default("RUNNING")
-  buildLog      String[]
-  createdAt     DateTime @default(now())
+  buildStatus          String   @default("RUNNING")
+  buildLog             String[]
+  validationStatus     String?
+  atlasValidationNotes String?
+  createdAt            DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   expert   Expert         @relation(fields: [expertId], references: [id], onDelete: Cascade)
@@ -256,9 +258,14 @@ model SkillPackage {
   examples        Json
   antiPatterns    Json
   evidenceSummary String
-  releaseState    ReleaseState @default(DRAFT)
-  coverageScore   Float        @default(0)
-  createdAt       DateTime     @default(now())
+  releaseState       ReleaseState @default(DRAFT)
+  coverageScore      Float        @default(0)
+  validationErrors   String[]
+  validationWarnings String[]
+  reviewNotes        String?
+  reviewedAt         DateTime?
+  reviewedBy         String?
+  createdAt          DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
   expert  Expert       @relation(fields: [expertId], references: [id], onDelete: Cascade)
