@@ -1,0 +1,718 @@
+0:00
+We'll now take a closer look at how skills are structured
+0:02
+and best practices for creating skills.
+0:05
+Then we'll apply what you learn to two examples.
+0:08
+One to create practice questions based on lecture notes,
+0:11
+and another to analyze the characteristics of time series data. Let's go.
+0:15
+In this lesson, we're going to focus
+0:17
+a bit on the structure of a skill,
+0:19
+some of the best practices associated with it.
+0:22
+and then we're going to take a
+0:23
+look at two skills that we make
+0:25
+and see how they fare when run through the skill creator
+0:28
+to see how they perform against some of the best practices.
+0:31
+To review, every skill that we make has
+0:34
+required SKILL.md file with some YAML Frontmatter
+0:37
+that requires a name and a description.
+0:40
+In the underlying SKILL.md,
+0:42
+we have the content that goes in our skill,
+0:44
+and then any references to scripts
+0:47
+or any additional text files, assets necessary
+0:50
+that are loaded only when necessary.
+0:53
+As we take a look at some
+0:54
+of the best practices for names and descriptions,
+0:57
+you can imagine this is mission critical.
+0:59
+Your name and description are not only how Claude
+1:02
+can analyze what your skill does,
+1:04
+but also detect when to use that particular skill.
+1:08
+So with the name, there's a
+1:10
+maximum of characters, same with the description.
+1:12
+We mentioned briefly, the name has
+1:14
+to contain lowercase letters, numbers and hyphens,
+1:16
+and in general, stick with the verb plus ing form
+1:20
+the name of your skill.
+1:21
+For the description, you want to describe
+1:24
+not only what it does, but also when to use it.
+1:27
+And if there are specific keywords
+1:29
+that lead to agents triggering this skill,
+1:31
+make sure to lean into those.
+1:33
+In addition to the required fields that you have,
+1:36
+the agent skills specification allows for optional fields.
+1:40
+This could be the license, compatibility,
+1:42
+and arbitrary key-value pairs in your metadata.
+1:45
+What's important to note here
+1:47
+is that while there is a standard on agent skills,
+1:50
+there are some skills that you might come across,
+1:53
+some built by Anthropic, some others,
+1:55
+that don't follow this specification to a T.
+1:58
+The skills are in active development,
+2:00
+as is the specification for skills
+2:03
+as we work across many different model providers
+2:05
+and many different agent tooling ecosystems.
+2:08
+As we start to move past the YAML Frontmatter
+2:10
+and into the underlying body of the skill,
+2:13
+there are no underlying restrictions that we
+2:15
+have for the format of our skill.
+2:17
+However, when you think about building predictable workflows,
+2:20
+you want to make sure you have step-by-step instructions.
+2:23
+As we saw in other skills, especially the skill creator skill,
+2:27
+it's important to specify edge cases,
+2:30
+step-by-step instructions, and if there's a
+2:32
+reason for a step to be skipped,
+2:34
+be very clear why that is. In general,
+2:37
+keeping this to under 500 lines is best practice,
+2:40
+because we can always reference external files,
+2:43
+assets, scripts, when necessary.
+2:45
+In general, being clear and concise is valuable,
+2:48
+and using forward slashes is mission critical even when on Windows.
+2:53
+It's important to make sure the skill works across many different environments.
+2:57
+When you think about creating skills,
+2:59
+you want to think a little bit about how
+3:01
+much freedom you want to give to that skill.
+3:03
+Should we allow for general approaches and general directions,
+3:07
+or should we be focusing on a specific sequence?
+3:10
+You can imagine for following best practices,
+3:13
+we might want a low degree
+3:14
+of freedom, but for more creative outputs,
+3:16
+multiple colors, multiple styles, multiple fonts,
+3:19
+we can allow for that high degree of freedom.
+3:22
+As we start to think about more complex workflows with multiple skills,
+3:26
+breaking things down into sequential steps
+3:28
+is always more valuable
+3:30
+than having one very, very large
+3:32
+skill that tries to do it all.
+3:34
+These systems can handle 100+ skills.
+3:36
+It's important to make sure that they're named appropriately,
+3:39
+not confusing, and can be followed with a predictable pattern.
+3:43
+In the specification, there's room for optional directories.
+3:47
+And as we've seen with quite a few different skills,
+3:49
+there are subfolders for scripts, references, and assets.
+3:53
+Your scripts include any kind of code
+3:56
+that needs to be read and executed.
+3:58
+You also want to make sure
+3:59
+you have error handling and clear documentation.
+4:02
+Our references contain additional documentation or reference files.
+4:05
+And in general, it's often valuable
+4:08
+to instruct the skill to read the entire reference file
+4:11
+if it happens to be quite long.
+4:14
+Finally, we have underlying assets.
+4:16
+These could include templates for output, images, logos,
+4:19
+data files, schemas, and so on.
+4:22
+It's important to note that these directories,
+4:25
+scripts, references, and assets are following the standard of agent skills.
+4:30
+But you might come across quite a few different skills
+4:33
+that don't necessarily follow that particular standard yet.
+4:36
+The standard is rapidly evolving
+4:38
+and skills are also rapidly evolving.
+4:40
+So going forward, we'd expect that skills created follow this standard.
+4:45
+But you might come across some that have different folder names
+4:47
+and different conventions. Now that we
+4:49
+have a good sense of best practices,
+4:52
+optional directories,
+4:53
+and how to write production grade skills,
+4:55
+let's take a look at two examples of skills that we've created,
+4:59
+step through them, and then run them through the skill-creator
+5:03
+to analyze for best practices
+5:05
+and talk about evaluating these skills
+5:07
+to make sure we're ready for production.
+5:09
+So I'm in VS Code now.
+5:11
+And here we have two custom
+5:13
+skills that we're going to dive into.
+5:14
+The first one is a generating practice questions skill.
+5:19
+If we take a look at this
+5:20
+skill, we can see that the description
+5:22
+is for generating educational practice questions
+5:25
+from lecture notes to test understanding.
+5:27
+You can imagine you're a teacher or instructor,
+5:29
+you want to provide a particular format for input and output.
+5:33
+and you want to generate comprehensive questions to test understanding.
+5:38
+Let's step through this skill. To
+5:40
+start, we have supported formats for input.
+5:43
+We specify what particular libraries to use,
+5:46
+and we specify what text to extract.
+5:49
+We then follow with our question structure.
+5:51
+Again, we want to be very specific,
+5:53
+so we're specifying the exact order
+5:55
+that we want these questions generated in.
+5:58
+Starting with True/False, working all the way towards realistic applications.
+6:03
+For each of these questions, we have sub guidelines below.
+6:06
+We can see here that this skill is not more
+6:08
+than 500 lines of code.
+6:11
+But if it needed to grow larger and larger,
+6:14
+we can always include underlying files
+6:16
+to reference to if necessary.
+6:19
+As we take a look at some of these examples,
+6:21
+for true and false, even coding questions and so on.
+6:24
+We can see here, we're being very explicit
+6:27
+with the scope and the structure
+6:29
+and the required output for these particular questions.
+6:32
+As we dive deeper into that output format,
+6:35
+We specify that it depends on the user request.
+6:39
+And instead of giving direct examples
+6:41
+of every single kind of output,
+6:43
+we're actually referencing templates
+6:45
+inside of our assets folder.
+6:47
+If we're dealing with LaTeX or we're dealing with Markdown,
+6:49
+we specify exactly how we want that to look like.
+6:54
+For example, with Markdown, here's how true and false might look like.
+6:58
+With LaTeX, here is how our true and false
+7:00
+and examples might look like as we go through.
+7:03
+If you find yourself needing a particular kind of output format,
+7:07
+instead of putting that all in the SKILL.md,
+7:10
+reference it in an external asset or file.
+7:13
+Remember that these files, these templates are only being loaded when necessary.
+7:18
+So we can be extremely efficient with our tokens and context window.
+7:22
+by only loading the particular file
+7:24
+in the data format that we need.
+7:27
+If there are external resources that we need,
+7:29
+domain-specific examples, we can link to that as well,
+7:32
+like we do in the references folder here.
+7:35
+We're leaning into that concept of progressive disclosure
+7:38
+by only loading what's absolutely necessary
+7:41
+and referencing external files only when we need.
+7:45
+The second skill we're going to look at
+7:47
+is a skill for analyzing time series data.
+7:50
+We're going to provide a CSV
+7:51
+and we want to understand the characteristics
+7:54
+before forecasting quite a few different things.
+7:57
+What's important to note here is that
+7:59
+as we go through this particular skill,
+8:01
+there is a very particular deterministic workflow that we want to have.
+8:05
+We're making use of a few different
+8:08
+Python scripts to perform that particular action.
+8:10
+To start, we have a Python script
+8:12
+for visualizing the data that we're working with.
+8:15
+Plotting the time series, a histogram,
+8:18
+rolling stats, box plots, and quite a few more.
+8:22
+For working with autocorrelation, we also have
+8:24
+plots as well that we can draw.
+8:26
+Similarly with decomposition.
+8:28
+As we take a look at our diagnose.py,
+8:31
+we have underlying functionality for analyzing the data that we're working with.
+8:36
+While there are quite a few functions
+8:38
+here, I want to draw your attention
+8:40
+to what we do at the end when we run our diagnostics.
+8:43
+We make use of these functions to analyze data quality, distribution,
+8:48
+stationary tests, seasonality, trend, autocorrelation,
+8:52
+and finally, end with a transform recommendation.
+8:55
+What we have here is a predictable workflow
+8:58
+that we want to run each time in a particular order.
+9:01
+So let's go back and look at our skill
+9:03
+to see exactly how that's done.
+9:06
+First we're going to start with the format for our input.
+9:09
+We're going to be very explicit
+9:10
+for what we should be looking for,
+9:12
+the names of the columns and the particular data types.
+9:16
+Next we're going to move on to one of
+9:18
+the most important parts of this skill, the workflow.
+9:20
+Notice here, we're being extremely explicit with the steps that we have,
+9:25
+telling our particular skill and Claude
+9:27
+to run this exact script when we begin our diagnostics.
+9:32
+We then have the option for generating the plots necessary
+9:35
+and reporting this data to the user.
+9:37
+taking this data, finding what's in the summary.txt
+9:41
+and presenting the relevant plots.
+9:44
+We can also see here for answering
+9:45
+some of these questions that we might need,
+9:47
+we have an interpretation.md file for guidance.
+9:51
+As we take a look at some of the script options,
+9:53
+we can add additional flags if necessary.
+9:55
+And as we start to think about what's being output,
+9:58
+we can specify exactly the tree of files,
+10:01
+text files, images, and so on that we output.
+10:05
+We want to be extremely predictable with the data that's coming in
+10:08
+the operations that we perform, and then finally the output.
+10:12
+As always, if there are external references,
+10:14
+we can make sure to list those here.
+10:17
+And given that we have scripts that are dependent on Python libraries,
+10:21
+we need to make sure that
+10:23
+we highlight exactly what those dependencies are
+10:25
+and make sure that they're installed so that these scripts run correctly.
+10:28
+Now that we've taken a look at
+10:30
+these two custom skills that we've created,
+10:33
+let's see how they stand up when
+10:34
+we run this through the skill creator skill
+10:37
+and determine if we're following best practices.
+10:40
+We could do this in a couple environments.
+10:42
+We can go back to Claude desktop, but what I'd like
+10:44
+to show you is how we can use Claude Code with skills.
+10:46
+We're going to see this in
+10:48
+much more depth in a future lesson.
+10:49
+But right now, I'm going to open up Claude Code.
+10:52
+I'm going to install the necessary skill in our case
+10:55
+skill-creator. And then we're going to use two subagents in parallel
+11:00
+to evaluate our analyzing time series
+11:02
+and our generating practice question skills.
+11:04
+This is a really helpful way to just start the evaluation process
+11:08
+for how well we've done with writing these skills.
+11:11
+So we're going to go ahead and hop into Claude Code.
+11:15
+Unlike Claude AI, Claude Code does not come
+11:17
+with the built-in skills that include
+11:20
+skill creator. So we need to install those.
+11:23
+And we're going to do that using a marketplace.
+11:26
+So we're going to head over to our Marketplaces.
+11:29
+We're going to add a marketplace for anthropic/skills.
+11:31
+This is the repository that we saw earlier that contains two collections.
+11:36
+First, document-skills. These include processing Excel files,
+11:42
+PowerPoints, Word docs, and PDFs.
+11:44
+And the other collection are the example-skills.
+11:47
+These are some of the other ones that we saw
+11:50
+including the skill creator skill.
+11:52
+So let's install this in the project scope. Once we install that,
+11:56
+We're going to see that we need to restart Claude Code.
+11:59
+And we're also going to see that in our .claude,
+12:02
+we have in our settings.json
+12:04
+the enabledPlugins that includes these skills.
+12:07
+So let's go ahead and restart Claude Code
+12:10
+and see what skills we have.
+12:12
+And we can do that using the /skills command.
+12:16
+If we've done this correctly, we should see that we have
+12:19
+our skill-creator skill right here as expected.
+12:22
+Let's go ahead and make use of that skill.
+12:24
+So we're going to ask Claude Code
+12:26
+to use the skill-creator skill to evaluate
+12:28
+how these skills have followed best practices.
+12:31
+To do this a little bit faster,
+12:32
+we're going to use subagents in parallel
+12:34
+where each subagent is evaluating
+12:36
+each of the custom skills that I have.
+12:38
+In order to do this, we're going
+12:40
+to be prompted to use that skill, skill-creator,
+12:42
+which is great. It's working as expected.
+12:45
+We're going to successfully load that skill, read the necessary files,
+12:49
+and go ahead and dispatch our subagents to check for best practices.
+12:53
+We can see here, it's found the correct skills,
+12:55
+generating practice questions, analyzing time series.
+12:58
+And let's launch our two agents
+13:00
+to evaluate these skills against best practices that we have.
+13:03
+Alright, let's see how we did. Well, not too bad.
+13:08
+generating practice questions, nine out of ten.
+13:10
+We could improve a bit on the conciseness.
+13:12
+We've got some nice recommendations here.
+13:15
+The good news is we did even better on analyzing time series.
+13:18
+We can see some observations here
+13:20
+and some excellent job across avoiding duplication,
+13:23
+Frontmatter quality, and conciseness.
+13:26
+A really nice way to evaluate your skills
+13:28
+is to run them through this skill creator,
+13:30
+which includes best practices out of the box.
+13:33
+So we've run our skills through this skill creator
+13:35
+to analyze for best practices
+13:37
+in the underlying SKILL.md and associated files,
+13:41
+but how can we make sure the skills are working as expected?
+13:44
+Here's one example that we could build a harness around
+13:47
+to think about writing a unit test for our skills,
+13:50
+similarly to how we write unit tests for software.
+13:52
+So to start with our generating practice questions,
+13:55
+when we think about what the evaluation might look like,
+13:58
+we would start with a couple different queries.
+14:01
+Generating questions and saving it to a markdown file,
+14:04
+to a LaTeX file, to a PDF.
+14:07
+we can go ahead and make sure that we're passing in
+14:09
+the correct files in the correct format.
+14:13
+We can then make sure that
+14:14
+our expected behavior is what we need.
+14:17
+Using the correct libraries for PDF input,
+14:19
+extracting the learning objectives as we specified,
+14:22
+generating different kinds of questions
+14:25
+and following guidelines for those.
+14:27
+using the correct output structure,
+14:29
+using the correct output templates
+14:31
+that we saw in our assets folder,
+14:33
+making sure in certain data formats like LaTeX
+14:36
+that it's successfully compiling.
+14:38
+And then finally, making sure that our questions are generated
+14:41
+to the correct files and the right format.
+14:44
+We also would want to make sure
+14:46
+that we gather human feedback in this process
+14:48
+and that we test this across all
+14:50
+the different models that we're planning to use.
+14:52
+For our second skill for analyzing time series,
+14:55
+we make use of three different Python scripts.
+14:58
+So we're going to make the assumption
+15:00
+that we've already tested those Python scripts
+15:02
+with traditional unit tests in software.
+15:04
+Assuming that those scripts are doing what we want them to do,
+15:07
+let's now test that everything is happening
+15:10
+in the correct order with the appropriate
+15:12
+inputs and outputs and expected behavior.
+15:15
+The query you might have here is to analyze
+15:17
+and generate plots for some time series data.
+15:20
+we'd want to pass in some potential CSVs,
+15:23
+make sure that the Python scripts that we showed
+15:26
+for visualizing and diagnosing are run correct.
+15:29
+More importantly, making sure that all the steps in the workflow
+15:32
+are in the correct order.
+15:34
+we're asking for plots, we want to
+15:36
+make sure that that optional step is included.
+15:39
+We then want to return a summary, interpret those findings,
+15:42
+and finally, create a folder with all
+15:45
+the required files in their right place.
+15:47
+If you can remember, in the output,
+15:49
+we had a very specific location for different files,
+15:52
+different folders, and underlying assets.
+15:55
+Similarly to our other skill, we want to get human feedback
+15:58
+and test across the models that we use.
+16:01
+In the next lesson, we're going to take these two skills
+16:03
+and bring them into Jupyter notebooks
+16:05
+and use the Claude messages API
+16:08
+to run these skills using code execution tools
+16:10
+to produce outputs programmatically.

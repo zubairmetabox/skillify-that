@@ -1,0 +1,1136 @@
+0:00
+We'll now switch to Claude Code and
+0:01
+use skills for code generation, reviewing, and testing.
+0:05
+We'll also set up sub-agents and equip them with skills.
+0:08
+Let's have some fun. So far we've seen how to use skills
+0:11
+in Claude AI and using the Claude messages API.
+0:15
+Now let's talk about how to use skills
+0:17
+in Claude Code in a bit more depth.
+0:19
+The application that I'm using
+0:21
+is a command line application for creating to-dos
+0:24
+that need to be completed and listing them,
+0:27
+and eventually editing and clearing.
+0:29
+I'm going to show the CLAUDE.md file to
+0:31
+give you a sense of what this project does.
+0:34
+And now we're going to do a little demo
+0:36
+before we jump into each of the individual files.
+0:38
+In Claude code, you have the ability to create a claude.md file.
+0:43
+This file is created using the /init command or manually by the user.
+0:48
+This file is always in your context and specific to your project.
+0:52
+This is where you can specify general instructions
+0:55
+about the code base project you're working on, technology stack,
+0:59
+and things that Claude needs to know in every single conversation.
+1:03
+So again, we're building a command line task management application
+1:06
+using Python, Typer as our CLI framework,
+1:10
+using dataclasses, Rich, we're storing information
+1:13
+in a JSON file for persistence,
+1:15
+and using uv for dependency management.
+1:18
+Our architecture follows according to this pattern.
+1:21
+We've got our entry point and all of our commands
+1:23
+get their own individual Python file.
+1:26
+We set up our data class in our models.py
+1:29
+our logic for storing, serializing, deserializing in our storage.py,
+1:33
+and then to display things nicely in the terminal, our display.py.
+1:37
+We have a couple constants and then our tests.
+1:40
+We can see in this file, we
+1:42
+have our Priority, our Task as Data Models,
+1:44
+how data is persisted. And remember again for this CLAUDE.md,
+1:48
+this is data that is always available
+1:50
+in context in every conversation that we have.
+1:53
+This is useful information to help Claude figure out
+1:56
+where to find things and how best to structure information.
+2:00
+So with that in mind, let's hop
+2:01
+in and play around with this application.
+2:03
+First, I'm going to go ahead and activate the virtual environment.
+2:07
+So I'll source .venv
+2:10
+then activate.
+2:12
+Once I've got that set up,
+2:14
+make sure my dependencies are in order with uv sync.
+2:24
+And once I've done that,
+2:26
+I can actually start using this
+2:27
+task command directly in the command line.
+2:29
+If I take a look at the command,
+2:31
+I see I have commands like add and done and list,
+2:34
+as well as some additional options.
+2:37
+So let's go ahead and take a look
+2:38
+at the tasks that I have right here.
+2:40
+Right now, I have none of them that are found.
+2:43
+I'll clear the terminal so I can start from the top.
+2:45
+Let's go ahead and add a task.
+2:47
+Right here, we'll call this write the final report.
+2:50
+and we'll give this a priority of high
+2:54
+and we'll give this a date to be done with the following.
+2:58
+We can see here I've added that
+2:59
+successfully, so let's go take a look.
+3:02
+We've got our task right there.
+3:04
+our display.py doing some nice formatting of that information.
+3:07
+Now let's go ahead and complete it. I'll go
+3:09
+ahead and mark that as done with the correct ID.
+3:12
+And then if I go ahead
+3:13
+and take a look at my list,
+3:15
+I can see with that flag
+3:17
+that I have this task that is done.
+3:20
+The plan for this lesson here
+3:22
+is to add another command line command for edit.
+3:25
+So we're going to have to go to src
+3:27
+to task and add another command here for editing.
+3:31
+But we also want to make sure
+3:33
+that when we add these additional commands,
+3:35
+we're following the correct workflow.
+3:38
+We're following a proper way of adding commands the right way
+3:41
+to pattern match a bit of
+3:43
+what we've done in this code base.
+3:45
+In order to do so, we're going to be using
+3:48
+a skill here that we've added called adding CLI command.
+3:51
+Skills are defined inside of a .claude folder
+3:54
+followed by a folder called skills.
+3:57
+When we take a look at this skill,
+3:59
+first not only we can see that
+4:01
+this is available at the project level.
+4:03
+We can also create skills at the user level
+4:06
+in our home directory if we'd like as well.
+4:08
+For this example, we'll be focusing in project specific skills.
+4:12
+So let's dive into what's happening for this particular skill.
+4:16
+Just like we saw before, we have a name and a description,
+4:19
+and here we're going to really lean
+4:21
+into the particular coding styles and functionality
+4:24
+that we want when creating new commands.
+4:27
+We're going to start by identifying the workflow necessary
+4:30
+and creating files in the appropriate directories.
+4:33
+Just like we have commands for add and done and list,
+4:36
+we want to make sure that when we
+4:38
+make new files for commands, it lives there.
+4:41
+We also want to make sure that these commands are registered
+4:44
+in our __init__.py file
+4:46
+that lives in the command folder.
+4:48
+When we think about how to create different commands,
+4:51
+there may be lots of different kinds.
+4:53
+There may be commands that involve subcommands
+4:55
+or flags or additional arguments.
+4:58
+You can provide plain text instructions to Claude,
+5:01
+but especially for coding examples,
+5:03
+Claude does really well when you tell it exactly
+5:05
+what pattern and style you want to follow.
+5:08
+In the Typer library, there are
+5:10
+many different ways of accomplishing particular tasks.
+5:12
+For example, there are many different ways of adding
+5:15
+type annotations to arguments that are being decorated.
+5:19
+In this particular case, this is the convention we want to follow
+5:22
+as it's a little bit more modern.
+5:24
+You can imagine in libraries and code bases that you use,
+5:27
+there are many different ways of doing things.
+5:29
+But what's useful about skills is it gives
+5:32
+us that predictable workflow for a set of tasks.
+5:35
+We also want to make sure we're using this display object here
+5:39
+and calling methods like success and info
+5:41
+to make sure that when we add a command,
+5:43
+we're not only executing the business logic,
+5:46
+but displaying the correct information to the user at the end.
+5:49
+When we work with flags, we want particular shorthand,
+5:52
+we want particular longer ways of addressing it.
+5:54
+We want to make sure that there's help text as well.
+5:57
+All of these pieces, type annotations, default arguments,
+6:00
+certain return values, are valuable to add in your skill
+6:03
+so that you know how best
+6:05
+to pattern match and follow predictable workflows.
+6:08
+As we think about commands with subcommands,
+6:10
+not only can you see here
+6:12
+how we want to structure individual commands,
+6:14
+but also how we want to display
+6:17
+when things like migrations or versions are changed.
+6:20
+As we imagine commands that might be destructive,
+6:22
+as we start adding functionality to clear,
+6:24
+we might want to specify what kind of delete we're doing.
+6:28
+If we choose to do a hard delete,
+6:30
+we want to make sure that we confirm
+6:31
+before we go ahead and delete that particular task.
+6:35
+This pattern can be followed as Claude starts to see
+6:38
+additional commands that might need to involve some kind of deletion.
+6:41
+As we think about registering, we want to be intentional
+6:44
+about how to add single commands and command groups.
+6:47
+So not only are we giving
+6:49
+Claude instructions for how to register commands,
+6:51
+we're being very specific with what conventions to follow.
+6:54
+And finally, as we talk about conventions,
+6:57
+here's where we can lean into requirements on our doc strings,
+7:00
+being mindful of exit codes and following constants that we have,
+7:04
+being mindful of commands that are
+7:05
+destructive. This is a really useful place
+7:07
+so that when we build our predictable workflows,
+7:10
+we know exactly what conventions we're following.
+7:12
+These are not conventions that have to exist
+7:14
+everywhere in the code base and
+7:16
+have to be loaded everywhere in context.
+7:18
+If so, we could put them in the CLAUDE.md.
+7:20
+But in this case, just for adding individual commands,
+7:23
+there's a subset of conventions to follow.
+7:25
+Let's only load those when necessary.
+7:27
+And not only are we using generic naming like CLI app,
+7:31
+we can use this skill across any
+7:34
+platform that follows the agent skills convention.
+7:36
+And depending on whatever CLI you're building,
+7:38
+if you want Claude to follow these particular patterns,
+7:41
+this skill can easily be adapted to do that.
+7:43
+Now that we have a skill for adding CLI commands,
+7:47
+let's also make sure that when we start to do
+7:49
+this particular workflow of adding commands,
+7:52
+we're being mindful of testing and
+7:54
+also validating the commands that we write.
+7:56
+This is another great use case for another skill.
+7:59
+In our second skill, for generating CLI tests,
+8:02
+we generate pytest tests for Typer commands.
+8:06
+We include here what kinds of fixtures we want,
+8:09
+how to handle edge cases, and
+8:11
+this is really important that we add
+8:13
+what to do and how to trigger this particular skill.
+8:16
+You can see here, use when the user asks to write tests,
+8:20
+for my CLI or add test coverage.
+8:22
+It's always important to be very explicit not only
+8:25
+in what the description is, but how
+8:27
+Claude can detect how to run it.
+8:29
+Similar to other skills, we specify the workflow that we want.
+8:33
+When writing tests, it's often best practice to leverage fixtures.
+8:37
+You can think of fixtures as information
+8:39
+that is run each time as you arrange your tests
+8:43
+to set up information, to set up dummy data,
+8:46
+as well as any kind of mocking or test infrastructure
+8:49
+that you need for each of the tests that you write.
+8:52
+For example here, we specify what our temporary storage might look like
+8:56
+and we specify what some sample data might look like.
+9:00
+As we run each of these tests, this information will be exposed
+9:04
+to allow us to arrange and set up the tests necessary
+9:07
+when we test individual files, folders, and workflows.
+9:11
+As we take a look at the
+9:13
+test structure, we're following a pattern of arranging
+9:15
+like we mentioned with our fixtures, invoking some kind of action,
+9:18
+and then asserting that the result is the case.
+9:20
+Right here, we're simply trying to build patterns
+9:23
+that Claude can use and follow when this skill is leveraged.
+9:27
+We can continue on with how we
+9:28
+want this test runner to be done.
+9:30
+and how to test scenarios by a command type.
+9:32
+As we read, as we add, here are examples
+9:35
+for what we want our test to look like.
+9:37
+As with many testing libraries,
+9:39
+there are lots of ways to accomplish a similar kind of task.
+9:42
+For these examples, here is the pattern we want to follow.
+9:46
+As we wrap towards the end of this skill,
+9:48
+we want to think a little bit about edge cases to cover.
+9:51
+When writing tests, we want to think about invalid input,
+9:54
+any kind of state, confirmation, or what happens
+9:57
+when things are not found or don't exist.
+9:59
+We want to make sure that we're following a checklist as well
+10:02
+when we go ahead and write our tests.
+10:05
+And then finally, to make sure we're running tests correctly,
+10:08
+providing the correct commands as well as how to run
+10:10
+in a verbose mode and for specific files.
+10:13
+The last skill that we have
+10:14
+here is to wrap up and review
+10:16
+and make sure that we're executing the commands as expected.
+10:19
+Once we've generated the tests and the tests are running,
+10:22
+let's make sure we're following the correct conventions.
+10:25
+Just like we saw with other skills,
+10:27
+there are ways in which we can execute the task necessary
+10:30
+and then come back and validate that things are working as expected.
+10:33
+As we think about reviewing these commands,
+10:36
+not only do we think about the underlying structure,
+10:38
+is this in the right location? Is this using the right decorator?
+10:42
+Is this registered correctly? But we're also making sure
+10:45
+that some of those practices we wanted around type annotations
+10:48
+or options for parameters or flags when possible, always are included.
+10:53
+It's often helpful to provide positive and negative examples.
+10:56
+So as we mentioned, using this Annotated type
+10:59
+versus a different kind of way to type your arguments.
+11:03
+As we think more about error handling and output,
+11:06
+we make sure that this checklist exists
+11:08
+so that the skill can go through and confirm
+11:11
+that all of these pieces are as expected.
+11:14
+We're not telling Claude how to perform
+11:16
+these actions like adding commands and generating tests.
+11:20
+We're making sure that it's working as expected.
+11:22
+You can think of this like an evaluation almost
+11:25
+for the other skills that we have and
+11:27
+including this skill as part of our workflow.
+11:30
+As we take a look at the bottom,
+11:32
+making sure that our best practices are followed,
+11:34
+as well as examples of mistakes
+11:36
+we might see and fixes for those.
+11:38
+As we take a look at the output format of the skill,
+11:41
+we want to make sure that all of our checklist is addressed,
+11:44
+including a summary and suggested fixes.
+11:47
+It's very useful to have this underlying review
+11:49
+so that when features are finished,
+11:51
+we can start by taking a look at this review,
+11:53
+include this even as part of our code review,
+11:56
+make sure we're building production grade features,
+11:58
+backed by tests, following best practices.
+12:00
+With that in mind, let's start
+12:02
+to put all of these skills together.
+12:04
+The first thing we're going to do
+12:05
+here is to add a new command
+12:07
+that allows us to edit individual tasks.
+12:10
+We're going to want to make
+12:11
+sure we edit the title and priority
+12:12
+and pass in an ID that is valid.
+12:15
+Now, let's hop into Claude Code and use these skills.
+12:19
+To make sure that I've registered these correctly,
+12:21
+I'm first going to just type in /skills.
+12:25
+This is going to list the available skills
+12:27
+that I have to me. These are project skills.
+12:30
+We also mentioned we can add skills in our home directory,
+12:33
+but right now we're just dealing with project skills.
+12:35
+We can also see the amount
+12:37
+of tokens that these skills are taking
+12:39
+as we just think about the name and description necessary.
+12:42
+When you create a new skill in Claude Code,
+12:44
+you want to make sure that you close Claude Code
+12:47
+and open it up again so that skill can be identified.
+12:50
+So if you find yourself looking at your list of skills
+12:53
+but you're missing the one that you might have just created,
+12:55
+make sure to close that instance of Claude Code,
+12:57
+open it up again and you should be in good shape.
+13:00
+Now that our skills are loaded correctly,
+13:03
+let's go ahead and add a new edit command
+13:05
+to allow users to edit the title and priority.
+13:08
+We're adding a little example here
+13:10
+and ensuring that we follow the conventions
+13:12
+for creating a new CLI command. So let's give this a shot.
+13:16
+We can see here that Claude Code is prompting
+13:19
+to use the adding-cli-command skill.
+13:21
+And that's great. We'll go ahead
+13:23
+and make sure that in the future,
+13:24
+it doesn't prompt us to do so.
+13:26
+We can see here, we're going to read
+13:29
+the existing files and storage to understand the convention,
+13:31
+as well as take a look
+13:33
+at examples of other commands for reference.
+13:36
+Now that we know the conventions, let's
+13:38
+go ahead and create that particular file.
+13:40
+We can see here there's a new file edit.py being created,
+13:43
+and we're going to go ahead and make that change.
+13:46
+We'll see here edit.py appears
+13:48
+and we're now going to register that command,
+13:51
+following the order that the skill has set out for us.
+13:54
+We can see here that the command is being registered
+13:56
+inside of our __init__.py as expected.
+13:59
+We're going to go ahead and make that change as well.
+14:01
+So we'll go ahead and let it proceed and run this command
+14:04
+to test out and make sure it's working as expected.
+14:07
+Looks like we're seeing what we expect and that's in good shape.
+14:11
+So now going to run the add command and
+14:13
+then go ahead and run the
+14:15
+list to make sure we've added successfully.
+14:17
+It's seeding some data so that we can
+14:19
+then make sure the edit command works as expected.
+14:22
+We'll go ahead and edit that particular task.
+14:24
+And we'll see here that we didn't specify a title or priority.
+14:28
+We'll then go ahead and put in that title.
+14:30
+And here, we'll see that edited as expected.
+14:34
+It's going to ask me again to edit this task,
+14:37
+and this is going to happen over and over
+14:39
+as we start to test all kinds of examples.
+14:42
+And while I could proceed over and over again,
+14:44
+we can imagine that this might start to
+14:46
+fill up the context window quite a bit,
+14:47
+and if this were a larger scale system,
+14:50
+maybe very time intensive and even compute intensive.
+14:53
+So what we're going to do here is something slightly different.
+14:56
+We're going to leverage the functionality
+14:58
+that Claude Code has for using sub-agents.
+15:01
+We're going to have one sub-agent to review code
+15:04
+and follow the criteria so that the
+15:06
+main agent can focus on the development.
+15:09
+We're then going to have another sub-agent
+15:12
+to generate and run the tests using the skill that we have.
+15:15
+What's going to be useful about this
+15:17
+is that we can have the main agent focus on development,
+15:19
+while sub-agents in their own context window
+15:23
+focus on generating the tests and reviewing the code.
+15:26
+We can then take the feedback and tests generated,
+15:28
+bring it back to the main agent,
+15:30
+with a much more context-efficient approach.
+15:33
+It's important to note that sub-agents
+15:35
+do not inherit skills from a parent,
+15:37
+so we need to be explicit with the skills that we give
+15:39
+to each sub-agent that we make.
+15:42
+There are multiple ways of passing skills to sub-agents.
+15:46
+One way we're going to show you is being explicit
+15:48
+with the name of the skill in the sub-agent.
+15:51
+Another option that we'll link in the notes
+15:53
+is where you can provide the exact agent name
+15:56
+and how best to run it from the skill directly.
+15:59
+With that in mind, let's go ahead and create our sub-agents.
+16:04
+The first agent we're going to make is our code reviewer.
+16:07
+And we're going to create these agents using the /agents command.
+16:11
+We're going to create a new agent.
+16:13
+We're going to do that on a project basis,
+16:15
+but instead of generating with Claude,
+16:17
+we're going to follow a manual configuration
+16:19
+so you can see what it looks
+16:21
+like to add a name, description, tools,
+16:23
+and the most importantly, skills for each of our agents.
+16:26
+The first one I'll make, we'll call code-reviewer.
+16:29
+This will be the unique identifier for our
+16:30
+agent, and then we'll pass a prompt to it.
+16:33
+We're going to paste in a prompt that
+16:35
+we'll take a look at once we've created this,
+16:37
+but it's going to look very familiar to how we review
+16:40
+and how we're specific and actionable in the
+16:42
+insights we make when doing the code review.
+16:45
+We're going to go ahead and give this agent a description
+16:47
+for when it should go ahead and be used.
+16:50
+We're going to review for code quality, security, and so on.
+16:53
+We're going to try to make this agent as generic as possible
+16:56
+for the set of tools that we want here.
+16:59
+We want to be very specific with
+17:01
+the tools that our sub-agent has access to.
+17:03
+So we'll make sure that if
+17:04
+there's code that needs to be executed,
+17:06
+we give it Bash, Glob and grep for finding files,
+17:09
+and Read to read underlying files that we're going to be reviewing.
+17:14
+Once we've selected these tools, we can go ahead and continue.
+17:18
+We'll decide to inherit from the
+17:19
+parent with the model that we use.
+17:21
+And we'll go ahead and give this a color of purple.
+17:25
+Once we've got this set up,
+17:26
+we'll go ahead and save this agent.
+17:28
+We can see here now in our agents folder
+17:31
+that we have a code reviewer agent to work with.
+17:34
+We've got the code reviewer, a description, tools,
+17:37
+and all the wonderful pieces that we added.
+17:39
+It's now time to make sure we specify the skills
+17:41
+that we want this sub-agent to use.
+17:45
+We'll do that using the skills field
+17:47
+and specify the name of the skill that we're working with.
+17:51
+In our case, reviewing-cli-command.
+17:55
+Before we create our next agent, let's do a quick review
+17:58
+of what we made here. Our agent
+18:00
+has a name and description, tools available,
+18:02
+a model that we inherit, a
+18:04
+color, and skills that we brought in.
+18:06
+We can add multiple skills, but right
+18:08
+now we're going to stick with one.
+18:09
+In our prompt, we mention it's a code reviewer ensuring high standards.
+18:14
+As we specify what this agent is, we specify when it's invoked,
+18:18
+general quality checks. If we're working with Python,
+18:21
+how to be intentional, CLI commands the
+18:24
+same way, and a particular output format.
+18:26
+Like we mentioned, this agent is a bit more generic.
+18:29
+And while we're using it in the context of our specific application,
+18:32
+skills can help us be more particular.
+18:35
+But this agent might need to be
+18:37
+used across a different variety of applications,
+18:39
+so we want to be a little bit
+18:40
+more generic with what we're trying to do here.
+18:42
+It's important to note that skills operate
+18:44
+slightly differently as sub-agents in Claude Code.
+18:48
+When this sub-agent is dispatched and created,
+18:51
+the skill is not only loading the name and description,
+18:55
+but the entire SKILL.md
+18:57
+The skills are pre-loaded when the agent is dispatched.
+19:00
+If there is additional progressive disclosure,
+19:02
+reading of other files or other commands, that is not done.
+19:06
+but the entire SKILL.md is read
+19:09
+when the sub-agent is dispatched.
+19:11
+Now that we've got our code reviewer agent,
+19:14
+let's add another agent for generating and running our tests.
+19:18
+Let's go ahead and make our second agent.
+19:20
+We're going to go create a new agent
+19:22
+in our project using the manual configuration.
+19:26
+and we'll call that test-generator-runner.
+19:29
+We're going to go ahead and add a
+19:30
+prompt here that we'll review a little bit later,
+19:32
+but it's going to follow similar patterns to what
+19:34
+we saw with the other agent that we made.
+19:37
+We'll go ahead and specify a description for this agent,
+19:40
+where we'll specify that it should
+19:42
+run tests and generate them if missing.
+19:44
+When the user asks to test or run tests,
+19:47
+let's go ahead and make sure that this agent is dispatched.
+19:51
+Like we saw before, instead of giving access to all tools,
+19:54
+let's go to our advanced options.
+19:56
+In our advanced options, we're going to
+19:58
+go ahead and disable all of our tools.
+20:00
+and here we'll make sure we have a
+20:03
+Bash tool, Glob and Grep, Read as well.
+20:05
+But we're also going to need to Edit and Write individual files,
+20:08
+and in our case, Edit files that may already exist.
+20:12
+Once we've got these tools set up,
+20:14
+let's move on, talk a little bit
+20:16
+about the model we're going to be using.
+20:18
+Just like before, we'll inherit from the parent
+20:20
+and we'll go ahead and use yellow for this sub-agent.
+20:23
+This looks good to us, so we'll go ahead and save it.
+20:26
+Once we've created this agent, we also want to make sure
+20:30
+we specify what skills are being used.
+20:32
+In this case, the skills that we're going to be using
+20:35
+is the generating-cli-tests skill.
+20:39
+Again, we could add multiple skills,
+20:41
+but in this case, we're just going to use that individual one.
+20:44
+As we saw before, We specify when it's invoked,
+20:47
+we show how to discover tests
+20:49
+and the output format that we want,
+20:51
+and then some underlying rules to make
+20:53
+sure that things are working as expected.
+20:55
+And just like our other agent, to be
+20:57
+a little bit more generic and lean on skills
+20:59
+to provide consistent workflows.
+21:01
+Now that we've created our sub-agents and our skills,
+21:04
+let's put this all together to make
+21:05
+sure that when we add new commands,
+21:07
+we dispatch sub-agents when necessary,
+21:09
+using the skills that we want.
+21:12
+Let's go ahead and start by using our code-reviewer subagent
+21:15
+to review the edit.py command that we made.
+21:19
+This should not only dispatch the subagent,
+21:21
+but also make use of the
+21:23
+skill that we provided to that subagent.
+21:25
+we're going to see here that
+21:26
+the code reviewer agent has been dispatched.
+21:29
+And now we're going to go ahead and
+21:31
+use the necessary skills and tools that we've defined.
+21:35
+We can see here what's working and what's not working.
+21:38
+No critical results, but we've got some warnings.
+21:40
+issues to fix and suggested fixes.
+21:43
+We can go ahead and use the
+21:45
+main agent to implement those if we'd like.
+21:47
+We're then going to use our test runner sub agent
+21:50
+to generate the tests for our edit.py command. So we'll go ahead
+21:53
+and make sure that we're referencing the edit.py file
+21:58
+and go ahead and dispatch the second sub-agent.
+22:02
+We can see here it's generated the necessary commands
+22:05
+and it's prompting me to make sure
+22:06
+that we want to make this edit.
+22:08
+So we'll go ahead and do
+22:10
+so as we add tests for editing.
+22:12
+I can confirm that these tests
+22:14
+are working using this command uv run.
+22:17
+And then we'll go ahead and run
+22:18
+all of our tests with verbose mode
+22:20
+to make sure things are passing and there are no regressions.
+22:23
+Once this is done, we can see
+22:25
+that all of our tests are passing,
+22:27
+none are failing, and here's a summary as well.
+22:30
+We made use of two different sub-agents, leveraging multiple skills,
+22:34
+and as we start to add more features
+22:36
+and functionality, we can put these all together.
+22:38
+The next thing we're going to do
+22:40
+is see our code reviewer sub agent
+22:42
+and our test runner sub agent in action.
+22:45
+Let's imagine there's a clear.py file,
+22:47
+a new command that's been added by someone on the team
+22:49
+who hasn't followed best practices and maybe didn't use
+22:52
+all the skills and infrastructure that we set up.
+22:55
+We're going to go ahead and use our code reviewer sub agent
+22:58
+as well as our test runner sub agent
+23:01
+to figure out how best to fix the clear.py file.
+23:05
+We're going to dispatch our code reviewer
+23:07
+to review the clear.py command.
+23:10
+then we're going to use our test generator runner
+23:12
+to generate the test necessary for this command.
+23:15
+We'll validate finally that things are working as expected,
+23:18
+and make sure all the tests are passing
+23:20
+and following the best practices that we've standardized.
+23:22
+We can see here there are
+23:24
+quite a few issues and some warnings.
+23:25
+Now that we found these issues, let's make sure that
+23:28
+the main agent is reading the files and fixing them.
+23:30
+We're going to want to make sure
+23:32
+that we allow for these edits to clear.py.
+23:34
+And here we can see things like displaying things to the console
+23:37
+are done using the correct methods like
+23:40
+display as mentioned in our best practices.
+23:42
+We also want to make sure that we're registering this command correctly
+23:45
+inside of our __init__.py
+23:47
+The main agent itself is not adding additional context
+23:50
+for the reviewing and generating tests.
+23:53
+It's simply taking the output of
+23:55
+the sub-agent to better execute these tasks.
+23:57
+Next up, it's time to generate tests for the clear command
+24:00
+that is following our best practices.
+24:03
+We can see here it's adding
+24:04
+a file to test this clear command.
+24:06
+Let's go ahead and approve that. Now that we've created this file,
+24:10
+let's go ahead and run the
+24:12
+tests, make sure they're working as expected.
+24:15
+And now we can get a summary of what's been completed.
+24:17
+Six critical issues, four warnings, and all of them fixed.
+24:21
+Instead of using incorrect methods,
+24:24
+instead of using flags that are
+24:25
+not the right format that we want,
+24:27
+incorrect exit codes, we fixed quite a few different issues.
+24:31
+We've then added tests on top of that
+24:33
+to make sure that we're confirming that
+24:35
+all these best practices are done as expected,
+24:37
+and the functionality is working that we like.
+24:40
+In the next lesson, we'll shift away from Claude Code
+24:42
+and move to the Claude Agent SDK
+24:45
+and showcase how to use skills when building your own agents
+24:48
+using the same harness that Claude Code uses.

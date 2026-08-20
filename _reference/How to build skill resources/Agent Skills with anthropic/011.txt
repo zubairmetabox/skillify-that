@@ -1,0 +1,30 @@
+0:00
+Congratulations on making it this far.
+0:01
+You've learned how to create skills, explored their best practices,
+0:05
+and seen them in action across different platforms.
+0:08
+When creating a skill, start with basic markdown instructions,
+0:12
+then expand later following progressive disclosure.
+0:15
+Monitor how your agent uses your skill
+0:17
+in real scenarios and iterate based on observations.
+0:21
+Make sure the description contains enough detail for
+0:23
+your agent to know when to use it.
+0:25
+Don't forget, Claude is very knowledgeable about what skills are.
+0:29
+So you can always start with
+0:31
+a simple conversation to begin creating skills
+0:33
+and then use the skill creator skill to follow best practices.
+0:37
+Thank you for joining me in this journey.
+0:39
+And I can't wait to see what you build with agent skills.

@@ -1,0 +1,108 @@
+0:00
+If you've made it this far, congratulations, you're an AI builder now.
+0:05
+I've met people who've been clearly building software with AI, maybe even for months,
+0:10
+that somehow still wonder if they're actually a builder.
+0:14
+I'm here to tell you, yes, you are, and I count you as one of us, a builder.
+0:20
+I hope you do one last activity and get a certificate for this course.
+0:25
+The final project is to make your own fill-in-the-blanks story builder.
+0:31
+I hope you use the prompt building blocks to build your own fill-in-the-blanks app.
+0:36
+The final project must include three to five input views,
+0:39
+a button that takes the input and then generates the output, and a place to display the output.
+0:44
+You've already seen the birthday card app.
+0:47
+Here are some other ideas for maybe inspiration.
+0:51
+This is a funny product review generator where the blanks are the product name,
+0:57
+some number, a noun, a body part, and so on, and it generates product reviews.
+1:03
+Notice it says there are totally honest product reviews that look like this.
+1:07
+Feel free to pause the video and read this if you want, but I love this.
+1:11
+Or here's another time off request generator where you specify how much time you went off,
+1:18
+a noun, a body part, an object, and then it says I need an entire month off
+1:23
+effective immediately because a vintage review requires my urgent attention.
+1:26
+And so whether a birthday card, or a product review, or a time off,
+1:31
+or some other type of story generator,
+1:33
+please write your own prompts and use it to generate an app like this.
+1:38
+On the website, when you go to the next item,
+1:40
+you will see the usual chatbot that you can use to write your prompts,
+1:43
+to get an HTML file, and download it onto your own computer.
+1:48
+Please do that, run it, see if it works to your satisfaction.
+1:51
+And you could either use our website, or you're also welcome to use an external website
+1:56
+like ChatGPD or Gemini to generate your HTML file.
+2:00
+When you're done building this project, please go to this final page.
+2:04
+It might take a second to load.
+2:05
+And then click Upload File.
+2:08
+And here I'm going to navigate to the file that I had downloaded.
+2:13
+And here's a preview of the app I actually generated.
+2:16
+When you're ready, hit Submit Assignment.
+2:17
+And our AI will look at your HTML file
+2:21
+and see if it seems to work correctly and give you feedback if any.
+2:25
+Assuming it works, this will bring you to the last exercise of this course
+2:30
+and will earn you a certificate.
+2:32
+Most effective builders keep taking courses and also keep building.
+2:37
+I find that if someone only builds,
+2:39
+they often end up unaware of core concepts
+2:42
+and can end up spending months reinventing the wheel or worse,
+2:46
+doing things in very strange ways.
+2:48
+But conversely, if someone only takes courses,
+2:51
+then they end up with theoretical knowledge without knowing how to apply it.
+2:55
+So both building and taking courses are important.
+3:00
+Please keep building whatever you feel like.
+3:02
+And I'll also suggest some additional courses for you to consider in the next item.
+3:07
+Keep sharing your applications with friends to get the feedback
+3:10
+or maybe just to get a laugh out of them.
+3:14
+Being a builder is one of the most fun things in the world.
+3:18
+I'm glad you and I have started this journey together
+3:22
+and I hope we'll keep building and learning together.
+3:26
+Thank you also to Deep Learning for AI's Summer Rae,
+3:28
+Andres Gonzalez, and Tommy Nelson who had contributed to this course.

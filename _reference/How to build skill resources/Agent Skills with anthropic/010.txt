@@ -1,0 +1,941 @@
+0:00
+In this final lesson, we'll create a research agent
+0:01
+using the Claude Agent SDK.
+0:04
+The agent will use a skill to create a learning guide
+0:07
+for an open source tool based on its documentation,
+0:10
+GitHub repo, and web search.
+0:12
+Let's go. Now that we've seen how to use skills
+0:16
+on the web with Claude using the messages API
+0:19
+and Claude Code, let's talk about
+0:21
+how to use skills with the Claude Agent SDK.
+0:24
+As a refresher, the Claude Agent SDK
+0:26
+is a programmatic way of building your own
+0:29
+agentic applications that use the same
+0:32
+internal harness that Claude Code does.
+0:34
+What we're going to be building
+0:36
+here is a general purpose research agent.
+0:38
+The main agent is going to be able to research information
+0:41
+from multiple sources and synthesize a summary.
+0:44
+It will dispatch three different subagents
+0:47
+for analyzing documentation,
+0:49
+analyzing and downloading repositories,
+0:51
+and researching information by searching the web.
+0:54
+Let's take a look at those prompts, and
+0:56
+then we'll take a look at a Skill
+0:57
+that's used to guide the Main Agent with a research methodology
+1:01
+and what needs to be extracted and synthesized.
+1:04
+To start, we have our main agent prompt.
+1:07
+This is the orchestrator that has access
+1:09
+to three available subagents with the following capabilities:
+1:12
+finding information from documentation,
+1:15
+analyzing repository structures,
+1:17
+finding articles, videos, and community content to bring it all together.
+1:20
+In this particular application, we mention that if the Skill is provided,
+1:25
+we want it to follow a particular pattern.
+1:27
+It's possible that Skills may or may not be provided
+1:30
+for the application we're building,
+1:32
+but in our case we're going to provide one.
+1:34
+If the skill matches the user's request,
+1:37
+we need to follow that skill's instructions precisely.
+1:40
+Since we're starting from scratch with this agentic application,
+1:44
+we want to be very intentional about
+1:45
+what to do when skills are provided
+1:48
+or when they're not. As we continue,
+1:50
+we have a couple high level delegation guidelines
+1:52
+for how to spawn subagents and after receiving results,
+1:55
+how to synthesize all of those pieces of information.
+1:59
+Let's briefly dive into some of the prompts for our subagents.
+2:02
+For the documentation researcher,
+2:04
+we'll have access to WebSearch and WebFetch.
+2:07
+We provide a process to locate documentation.
+2:09
+particular input formats, guidelines, and an output
+2:12
+to return findings in a certain way.
+2:15
+For the repository analyzer, we also provide WebSearch to find repositories,
+2:19
+Bash commands to clone and run git,
+2:22
+and then the ability to read and find
+2:23
+files and data within files.
+2:26
+Similarly, we provide a process,
+2:28
+an input format, guidelines, and an output.
+2:31
+Finally, our Web Researcher
+2:33
+makes use of WebSearch and WebFetch as well.
+2:35
+This allows us to search for content relevant to that topic
+2:39
+and to receive extraction instructions as well from the main agent.
+2:43
+We also provide guidelines as well as an output format that's necessary,
+2:47
+and if no output format is specified, follow a default structure.
+2:51
+All of these prompts will be used together
+2:54
+when we set up the code necessary to make our agent work.
+2:57
+Finally, let's talk about the skill we're going to be using here.
+3:00
+We have a skill named learning-a-tool.
+3:03
+The purpose of this skill here is to guide the main orchestrator.
+3:07
+We will not be using the skill in our individual subagents,
+3:11
+but we're using this skill as
+3:13
+a way to create a predictable pattern
+3:15
+so that the main agent knows the ideal workflow
+3:18
+and what and how to dispatch subagents.
+3:21
+We give the skill a name and a description.
+3:23
+And in this case, we want to create learning paths
+3:25
+for programming tools, define what information should be researched,
+3:29
+and specify how best to follow an approach to researching
+3:32
+all the way towards creating a comprehensive learning path.
+3:36
+To start, we have a very particular workflow that we have here.
+3:40
+We start with a research phase and we specify for official documentation
+3:44
+for that subagent exactly what to look for.
+3:47
+For the repository analyzer, a similar kind of approach.
+3:51
+And for our web researcher, very similar as well.
+3:54
+So we're using this skill to provide a constant and predictable workflow
+3:58
+for how best to work alongside
+4:00
+the subagents that the main agent has.
+4:02
+Once that data is given to us,
+4:04
+we then organize that content into progressive levels.
+4:08
+Here, we're using progressive disclosure
+4:10
+to lean into loading another markdown file
+4:12
+as the source of truth. In our progressive learning file,
+4:16
+we can see there's quite a bit
+4:17
+around the individual levels that we want.
+4:19
+starting from an overview and motivation,
+4:22
+all the way towards installing core concepts,
+4:25
+practical patterns, and then where to go next.
+4:27
+This progressive learning allows us to build levels
+4:30
+so that we know how to start from the beginning
+4:33
+and know eventually where to go deeper.
+4:35
+While this initial skill is useful for learning a tool,
+4:38
+you can also imagine that we might have additional skills
+4:41
+for maybe comparing one tool with another
+4:43
+depending on the data that we're working with.
+4:46
+As we move towards the additional phases of working with this skill,
+4:50
+we take that data and specify
+4:52
+a structure, and then specify an output.
+4:55
+We're very, very particular with the exact format that we're working with.
+4:58
+The goal here is to get access to a learning environment
+5:01
+that gives us an overview, resources, a path,
+5:04
+and code examples.
+5:06
+The goal here is to combine
+5:08
+the research from all of our subagents
+5:10
+into a particular output format that we want
+5:13
+and do that with consistency and predictability.
+5:15
+Now that we've seen at a high
+5:17
+level of the application we're going to build,
+5:19
+there's one last piece that we'll layer on.
+5:21
+We can imagine that we want to take
+5:23
+the output and write it to a centralized place
+5:25
+that we can share with teammates that might have a nicer interface.
+5:28
+And to do that, we're going to use Notion.
+5:31
+to connect to Notion, we're going to use an MCP server
+5:34
+and bring in the tools necessary to go ahead and execute that.
+5:38
+Now that we've examined the underlying prompts for our Main Agent
+5:41
+and Subagents, as well as the Skill we're going to be using,
+5:44
+Let's go ahead and begin by running uv init
+5:48
+and initialize a project and add the necessary dependencies
+5:51
+like claude-agent-sdk, python-dotenv, and asyncio.
+5:57
+Once we've installed these dependencies,
+5:59
+let's go ahead and create a file called agent.py.
+6:03
+So I'll go ahead, make a new file, call that agent.py.
+6:07
+Inside of our agent.py, I'm going to be adding the necessary code
+6:11
+To just get started with a small example
+6:14
+using the Claude agent SDK.
+6:16
+The boilerplate here brings in asyncio
+6:19
+to run this environment, dotenv to load environment variables,
+6:23
+And then from our utils, the display_message function.
+6:27
+Just to give some context, display_message
+6:30
+gives us a bunch of helpers for truncating and formatting input,
+6:34
+and it gives us a nice way to visually display
+6:36
+information from the main agent and the subagent.
+6:39
+This is very similar code to what we saw
+6:41
+when we worked with the API
+6:44
+and we got that nice output for what's happening
+6:46
+in each tool action and iteration.
+6:50
+To start, we set up our Claude agent.
+6:53
+We pass in a system_prompt here. This is going to change.
+6:56
+We pass in allowed_tools. This is also going to change,
+6:59
+but we just want to start with the basics here.
+7:02
+To get started with a simple conversation, we set up a loop.
+7:05
+accept some user input, run that through our model,
+7:09
+and take back the response and send that back to the user.
+7:12
+Let's go and see what that looks like.
+7:14
+I'm going to open the terminal again.
+7:17
+And we're going to go ahead and run uv run agent.py.
+7:21
+This is going to provide a terminal environment to us
+7:23
+where we can start a conversation.
+7:26
+I'll just start by asking, how are you?
+7:29
+In this case, I'm not going to
+7:30
+get a ton of valuable information here
+7:31
+because I just have a helpful assistant.
+7:34
+So what we're going to start layering on now
+7:36
+is the ability for our agent to get access to MCP servers
+7:40
+and the correct tools as well.
+7:43
+Let's go ahead and make some modifications to our main function.
+7:47
+Like we mentioned, the allowed_tools are going to change.
+7:50
+So what we're going to start doing
+7:51
+is adding the tools that our subagents need to use
+7:55
+so that they can be working as expected.
+7:58
+Read-only tools like read and Grep and Glob are allowed by default.
+8:02
+But when we want to start doing things like writing files,
+8:05
+searching the web, and executing commands by bash,
+8:07
+we need to pass that in explicitly.
+8:10
+So we'll bring in the Write tool, the Bash tool,
+8:14
+and our WebSearch and WebFetch tools.
+8:18
+We saw previously that our subagents
+8:20
+are going to be making use of these particular tools.
+8:23
+Our agent that's analyzing repositories needs Bash
+8:26
+to run git commands and writing files,
+8:28
+and our docs researcher and web researcher
+8:30
+will make use of searching and fetching.
+8:32
+Now that we brought in these tools,
+8:34
+the next thing we're going to add
+8:36
+are mcp_servers to connect to.
+8:38
+We'll use the mcp_servers keyword argument
+8:41
+and specify the name of the MCP server,
+8:43
+which in our case is notion. We're going to pass in
+8:47
+some default configuration.
+8:49
+And we're going to specify the command to run the notion server
+8:53
+alongside a notion environment variable that we have.
+8:57
+So we're going to make sure before
+8:59
+we go ahead from our .env file,
+9:02
+load in our notion token and import the OS module
+9:06
+to make sure that we can read that file correctly.
+9:09
+Now that we've loaded our MCP server correctly,
+9:11
+we need to make use of the tools that Notion provides.
+9:14
+If we would like, we can ask Claude right now,
+9:17
+what are all the tools that you get from this MCP server?
+9:21
+Or, we can go ahead and add those explicitly.
+9:24
+by using mcp, the name of our
+9:27
+server, followed by the name of the tool.
+9:29
+In this case, we're going to be using
+9:31
+all of the tools that Notion provides to us.
+9:34
+We need to make sure that this mcp_notion_* exists in allowed_tools
+9:39
+so that we can give the main
+9:40
+agent permission to use this set of tools.
+9:43
+We can explicitly add the name of the tool
+9:45
+or in our case, we're just going to include
+9:47
+all the tools available that mcp_notion provides to us.
+9:50
+Now that we've set up our mcp_servers and our allowed_tools,
+9:54
+let's go ahead and bring in our subagents and definitions for them.
+9:58
+We mentioned that our system_prompt is going to change.
+10:01
+And to start, we're going to go ahead
+10:03
+and load all of the prompts that we have.
+10:06
+We'll bring in a constant and a helper function
+10:09
+that we have to load all of these prompts.
+10:13
+We're going to go ahead and call that function
+10:15
+to go ahead and bring in these prompts.
+10:17
+inside of our main function.
+10:20
+We're going to make use of these
+10:21
+markdown files to load in the text necessary
+10:24
+and pass them to our agent options.
+10:27
+Before we go ahead and update the main agent,
+10:29
+we're going to add a dictionary that
+10:31
+references all of our agents with a definition.
+10:34
+We're bringing in the AgentDefinition class,
+10:36
+which we'll want to make sure we import correctly.
+10:40
+We can see in the AgentDefinition,
+10:42
+we have a description for our subagent,
+10:44
+a prompt that specifies the instructions for the agent,
+10:46
+and then the tools that we want that agent to use.
+10:49
+similar configuration to what we did in Claude code.
+10:53
+You can see here, we still need to use our main_agent_prompt
+10:55
+as well as this dictionary of agents.
+10:59
+So we'll update our system_prompt
+11:01
+with the main_agent_prompt.
+11:03
+and then we'll make sure to pass
+11:05
+in an additional keyword argument of agents
+11:07
+that references our dictionary with our agent definitions.
+11:11
+As you can see here, our researcher,
+11:13
+our analyzer, and our web researcher are
+11:16
+using tools that we've defined here as well.
+11:20
+It's important to make sure that you list all of the tools
+11:23
+that your main agent and your subagents will
+11:25
+need to use inside of your allowed tools.
+11:28
+or else your subagents will not allow them
+11:31
+even if you include the tools here.
+11:33
+Now that we've set up our agents, we need to make sure
+11:36
+we also include the all-important Task tool
+11:39
+to make sure that we can
+11:40
+dispatch subagents and assign tasks to them.
+11:42
+last piece we need to add here are skills.
+11:45
+And the good news is, in order to add skills,
+11:47
+there's just one more tool that we need to add.
+11:50
+And that is the Skill tool.
+11:52
+Since we have an environment here where there's a file system
+11:55
+and the ability to execute code using the Bash tool,
+11:58
+All we need to add is this Skill tool
+12:00
+so that we can correctly read skills
+12:03
+and understand how best to use them.
+12:05
+Similar to Claude code, skills are defined
+12:08
+inside of a .claude folder followed by a folder called skills.
+12:13
+Make sure your markdown files are SKILL.md
+12:15
+and your folder is called skills in the plural.
+12:19
+Now that we've added the tool for working with skills,
+12:22
+there's one more keyword argument that we need to pass in here.
+12:25
+We need to specify where we find this particular set of skills.
+12:30
+And we do so with a keyword argument called setting_sources.
+12:33
+And here we're going to specify that we want to find skills
+12:36
+inside of the user directory,
+12:38
+if we have skills in our home directory,
+12:41
+as well as project,
+12:43
+which is where we've loaded the skills for this particular application.
+12:46
+Now that we put this all together,
+12:48
+let's go ahead and test out our agent.
+12:51
+We open up the terminal
+12:52
+again. I'm going to go ahead and exit
+12:55
+and let's run this application again with the changes that we've made.
+12:58
+We're going to start by learning a little bit about MinerU.
+13:02
+For those of you not familiar, MinerU
+13:04
+is an open library for PDF extraction.
+13:07
+And the reason we're using this
+13:08
+example, is because this is not something
+13:10
+that Claude might know a ton of from its initial training data.
+13:14
+This is going to require external research, analyzing code repositories,
+13:18
+community documents, and other sources.
+13:20
+We're going to ask to create a learning
+13:22
+guide and then show me the plan first.
+13:25
+Here, we're going to start to see that the skill is invoked
+13:27
+and the input here is that skill called learning-a-tool
+13:31
+with the args that we specified.
+13:33
+So here, we can see that we first specified the plan.
+13:37
+We still have to go ahead and
+13:38
+run what the subagents are going to do,
+13:40
+but just like with Claude code and plan mode,
+13:43
+we might want to see what
+13:44
+the plan is before we start acting
+13:46
+and consuming tokens and taking time.
+13:48
+We can see the research phase of parallel investigation
+13:51
+with our different researchers.
+13:53
+We can see the structure necessary according to the skill,
+13:56
+and then finally, the output that we're expecting.
+13:59
+This looks like a good plan. So we'll
+14:01
+just go ahead and ask it to proceed.
+14:04
+It's going to start by spawning the docs_researcher subagent,
+14:07
+spawning the repo_analyzer and web_researcher,
+14:10
+and executing these in parallel,
+14:12
+using the tools that we've added under the allowed tools
+14:15
+that we've also passed in to our subagent.
+14:18
+We can see in parallel, the
+14:20
+docs researcher is heading to the documentation,
+14:22
+the repo analyzer is looking on GitHub,
+14:25
+and the web researcher is searching across tutorials and YouTube guides.
+14:29
+We're extracting the information from GitHub repositories
+14:32
+using the bash commands, while at the same time,
+14:34
+searching a YouTube channel for video demonstrations.
+14:38
+These agents are interacting in parallel,
+14:40
+fetching from different data sources
+14:42
+to bring this all together into a compelling tutorial.
+14:46
+Now that the subagents have finished completing their work,
+14:49
+We're going to create the comprehensive guide,
+14:51
+pull together all the necessary files based
+14:53
+on this research that we have here.
+14:56
+As instructed in the repository analyzer, we've cloned the repository
+14:59
+for MinerU, and keeping that here.
+15:02
+and we started to build the folder structure for learning this.
+15:06
+We can see here, we have our readme and resources,
+15:08
+as well as code examples that are being put together.
+15:12
+We can see here in the readme file,
+15:13
+it provides the learning path to us.
+15:16
+What we're going to learn, how to use this guide,
+15:18
+and importantly, time estimates that we might need.
+15:21
+We can see here, it's created for us the README, the resources,
+15:25
+and the learning path is still in progress.
+15:27
+Inside of our resources, we have links and references for MinerU.
+15:31
+So let's take a look at that.
+15:33
+Inside of our resources, we have documentation,
+15:35
+the repository, PyPI package,
+15:38
+and the paper underlying this library.
+15:40
+We have quick start guides, documentation, and related projects.
+15:43
+as we pull in additional information from the community.
+15:47
+We have all kinds of deep dives
+15:48
+across a variety of different articles and news coverage.
+15:52
+Now we can see that the learning path has been created
+15:56
+and it's time to create the code examples.
+15:59
+Let's take a look at this learning path.
+16:01
+starting with an Overview &amp; Motivation,
+16:03
+What Problem does it Solve?
+16:05
+We describe the Origin Story of the library,
+16:08
+What Existed Before, and some of the problems with those libraries.
+16:11
+We can see here this is
+16:13
+quite an in-depth guide and learning path,
+16:15
+and you can imagine this is
+16:16
+something that would last a long time
+16:18
+as you start to get up to speed knowing very little
+16:20
+to becoming an expert in working with this library.
+16:23
+We move into some of the distinct
+16:25
+features of the back end of this library,
+16:27
+all the way to code examples and many different characteristics
+16:31
+for how to use this as efficiently as possible.
+16:34
+We can start to see that our code files are being written
+16:38
+for hello world examples, concepts, and patterns.
+16:41
+For our hello world example,
+16:43
+we've got a nice README to get started with some first steps,
+16:46
+simple extraction to see how to start using this library,
+16:49
+as well as installation steps.
+16:51
+If there were particular libraries we wanted to use for installing
+16:54
+or patterns here, we could always add that to our skill.
+16:57
+But right now, this is going to give us a great start
+16:59
+to get up and running with this library.
+17:01
+as we look at some of the core concepts,
+17:04
+those are being created currently.
+17:06
+Now that those are done, we can
+17:07
+see in the README where we go next.
+17:09
+Once we've gotten up and running with the library,
+17:11
+we can start to look at some
+17:13
+of the fundamental concepts that the library possesses,
+17:15
+as well as comparing different speeds across backends.
+17:19
+Finally, we're going to create practical
+17:21
+patterns and examples with this third folder.
+17:24
+We can take a look at
+17:25
+this folder, and we can see here
+17:27
+that we have real-world processing pipelines and production use cases.
+17:30
+This includes examples for certain patterns,
+17:33
+as well as quite in-depth code examples using this library.
+17:37
+with doc strings, comments, and everything necessary
+17:40
+to use this library to its fullest extent.
+17:43
+We'll wrap up by validating and creating a
+17:45
+summary document, making sure everything has been done correctly.
+17:49
+We can take a look at the
+17:50
+output, which gives us a complete learning guide,
+17:52
+the directory structure as specified in our skill,
+17:55
+the learning path with the levels that we requested,
+17:58
+and then key features and a
+18:00
+quick start to get up and running.
+18:02
+The final thing we're going to do here
+18:04
+is write this particular file, the resources.md,
+18:07
+to a resources subpage in Notion.
+18:10
+This page already exists, so let's take
+18:12
+a look at what that looks like,
+18:13
+and then we'll prompt to go ahead and
+18:15
+use our MCP server to do the writing necessary.
+18:18
+We can see here in Notion under this learning section,
+18:22
+I have a sub page called resources.
+18:24
+The goal here is to use the MCP server
+18:26
+to populate what we had in our resources.md to this right here.
+18:31
+So let's go ahead and ask our agent to write that file
+18:34
+to that sub page in Notion.
+18:38
+We're going to be explicit with
+18:39
+the tools that we use in Notion
+18:41
+and allow it to use what we have available.
+18:43
+We've found the resources page.
+18:45
+We're going to read the resources.md
+18:47
+and convert it to the correct format in Notion
+18:50
+using rich Notion blocks. You can see
+18:52
+here we're using multiple tools from Notion,
+18:54
+doing this in batches, adding the quick start guides,
+18:57
+API Documentation, and the rest of the information
+19:00
+inside of our resources.md
+19:02
+We can see here in the resources file,
+19:05
+it's dynamically updating based on the documentation
+19:08
+in our resources.md
+19:10
+And as this finishes up, we're going to see all the content
+19:12
+from that file appear on our Notion page.
+19:15
+Now that it's finished, let's go take a look
+19:18
+at what our Notion page looks like.
+19:20
+We can see here, we've got our official documentation,
+19:22
+our tutorials, video resources, community channels,
+19:25
+all the data that came from that markdown file,
+19:28
+we've now written to Notion.
+19:30
+We made use of skills, MCP servers, agents, and subagents
+19:33
+all using the agent SDK.
+19:36
+You can imagine layering on additional skills for more complex workflow
+19:40
+or additional subagents to perform a variety of tasks.
+19:44
+We've just started to scratch the surface with functionality,
+19:46
+and there's still some security concerns that we should be mindful of.
+19:50
+For starters, we're allowing commands like write and bash to be executed
+19:54
+without requiring permission from the user.
+19:57
+The next step here is to
+19:58
+build an interface just like Claude code
+20:00
+that ensures that we allow the user to
+20:02
+confirm that they want to use those particular tools
+20:05
+for a certain action.
+20:07
+We've also just started to scratch the surface
+20:09
+with the ability to even add things like interrupts
+20:12
+for our agents and subagents, similar to Claude code.
+20:15
+So we've given you the foundation
+20:17
+to continue to build powerful agentic applications,
+20:19
+and we can't wait to see what you build next.
+_______________________
+Skills with the Claude Agent SDK
+Lesson Files
+You can find all the files for L7 here, with a few variations from what's shown in the video:
+
+Used haiku as the model for each subagent
+Specified the exact list of MCP tools to use
+Here are some key files to explore:
+
+System prompts for the main agent and subagents
+Files for the learning-a-tool skill
+utils.py (message formatting)
+agent.py
+The learning guide generated during filming
+To run the agent, follow the instructions in the README file. You'll need an Anthropic API key (no subscription required).
+
+About costs: Running the agent with the same requests costs approximately $3.43 in API credits if you use haiku as the subagent model (and using sonnet with the main agent), or $6.35 if you use sonnet with the subagents.
+
+Prompts Used in the Lesson
+Step 1: Start the research process
+
+Help me get started with MinerU. Create a learning guide. Show me your plan first.
+Note: The agent might take around 15 minutes to complete. You can always update the skill's instructions and agent definitions if you want faster research or a simpler learning guide.
+
+Step 2: Review and approve the plan
+
+You can agree with the plan or provide your feedback and suggestions.
+
+Step 3 (Optional): Export to Notion
+
+If you'd like to try the MCP integration with Notion:
+
+Write ./learning-mineru/resources.md to the "Resources" subpage under Learning in Notion. The subpage already exists. Use rich formatting. For Notion MCP: You can use the full range of Notion block types for proper formatting.
+Note: In the Notion account used in the lesson, we created a page called Learning with a subpage called Resources.
+
+More Advanced Options
+Advanced Permission Control
+Building a Continuous Conversation Interface (interrupt, new conversation, exit)
+References
+Claude Agent SDK Documentation
+Python Agent SDK
+Agent Skills in the SDK
+Claude Agent SDK Demos

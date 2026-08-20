@@ -1,0 +1,119 @@
+Hi, I'm Andrew Ng.
+0:02
+I want to show you how to build fun, useful software using AI,
+0:06
+regardless of your background or training.
+0:09
+If you're intrigued about using AI or vibe coding to build cool software,
+0:14
+or aren't sure where to start,
+0:16
+this course is for you.
+0:18
+Let me show you a funny birthday card app
+0:21
+that you learn to build in minutes
+0:23
+using ChatGPT, Gemini, or any other similar AI system,
+0:27
+even if you've never written a line of code before.
+0:31
+This birthday card app is a computer program called a web application,
+0:35
+which means that it runs right in your web browser.
+0:38
+The app takes whatever you type in
+0:40
+and creates a custom card for you on the spot.
+0:42
+In the next lesson, you build your own version
+0:45
+by describing what you want the AI to do,
+0:47
+and the AI will write all the code for you.
+0:49
+To use the app, you enter a name,
+0:51
+an age, a hobby, penguin fashion design,
+0:54
+an adjective, suspiciously fun,
+0:56
+and the plural noun, lucky socks.
+0:58
+Then hit Generate Card,
+1:00
+and it says,
+1:01
+Karen, against all odds, you've turned 27.
+1:04
+Your devotion to penguin fashion design,
+1:06
+this stuff of legends, and your suspiciously fun nature,
+1:08
+iconic.
+1:09
+Statistically speaking, most people like you.
+1:11
+I think that's pretty funny.
+1:13
+Or if I don't feel like filling in all of these words myself,
+1:16
+I can hit I'm feeling lucky,
+1:18
+and have this fill in automatically,
+1:20
+and then generate a different card.
+1:22
+And there's another birthday card.
+1:24
+And you get a different funny story,
+1:26
+or a different funny birthday card this time.
+1:28
+Notice the app stores all the cards we've generated.
+1:31
+If I click copy on any of them,
+1:33
+the birthday message goes to my clipboard,
+1:35
+so I can paste the message into an email or text,
+1:37
+and send it as a birthday card.
+1:39
+You might be excited to jump right in,
+1:41
+and start building out your own idea.
+1:43
+And if so, that's great.
+1:44
+And before doing that,
+1:46
+spending a little time building this birthday card app yourself
+1:49
+will help a lot.
+1:50
+Doing so will give you a better feel for how to talk to the AI,
+1:53
+and actually get the results you want.
+1:55
+And this practice process will build your intuition
+1:58
+for how to shape what the AI actually creates,
+2:01
+and you get a better sense of how even small tweaks
+2:04
+can lead to very different outcomes.
+2:06
+Once these set of concepts become a bit more familiar to you,
+2:10
+building your own ideas will become faster and easier,
+2:13
+because you have a better sense of how to steer the process.
+2:18
+So an app like this might seem complicated to build,
+2:21
+but in the next video,
+2:22
+I'll show you how you can build something like this in minutes.
+2:25
+Let's go on to the next video.

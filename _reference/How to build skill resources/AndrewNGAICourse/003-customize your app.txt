@@ -1,0 +1,322 @@
+0:00
+Now that you've built a basic birthday card app,
+0:01
+let's see how you can add additional features to it
+0:04
+so it can do additional things or be more fun.
+0:07
+If you showed your app to anyone else,
+0:09
+maybe they'll have ideas for things to add too.
+0:12
+And I also want to show you what to do
+0:15
+if there's something wrong
+0:16
+with whatever the AI had built for you,
+0:19
+such as if it doesn't work the way you're expecting.
+0:22
+As before, the primary way we will tell AI
+0:26
+what features to add is by prompting.
+0:29
+To understand why it's important
+0:30
+to be specific in the way you prompt,
+0:32
+let me make an analogy to ordering food.
+0:35
+If you go to a food truck and say, give me a sandwich,
+0:40
+who knows what type of sandwich they will give you
+0:42
+if that's all you say.
+0:43
+But if you say something more specific,
+0:45
+like I would like a vegetarian sandwich,
+0:47
+then that narrows down the range of what you may get back.
+0:50
+Or if you say, I'd like a vegetarian sandwich
+0:52
+with hummus and cheese and multigrain bread,
+0:53
+then that specific instruction
+0:56
+really means what you get back
+0:58
+becomes much more predictable.
+1:00
+Or if you say, I'd like such and such vegetarian sandwich
+1:03
+and add a drink and make it to go, please,
+1:04
+then it becomes much more predictable
+1:07
+what the food truck will give you back.
+1:10
+At a food truck, by being specific with what you ask for,
+1:13
+you're more likely to get what you want.
+1:15
+And so too it is with prompting AI.
+1:17
+By writing more specific prompts,
+1:19
+you're more likely to get exactly what you want.
+1:23
+Ooh, this is exactly what I wanted.
+1:27
+As you gain skills in getting AI to write for you,
+1:31
+you get better at being more specific
+1:33
+with the instructions you give the AI,
+1:35
+and this will give you better results.
+1:37
+I previously built an app using a prompt like this,
+1:40
+either on one go or by going back and forth a few times.
+1:44
+What I'd like to do now is add a few new features
+1:46
+and modify some existing ones.
+1:49
+For example, instead of having three input fields
+1:52
+like we have so far, name, age, and hobby,
+1:54
+maybe you want to gather five pieces of information,
+1:58
+so the five input fields that users can input
+2:01
+so you can create more personalized messages.
+2:03
+Or maybe you want a I'm Feeling Lucky button
+2:06
+that automatically fills out all the fields for you
+2:08
+so you don't have to type everything in
+2:09
+each time you use the app.
+2:11
+Or you can also update the look and feel,
+2:13
+say change the title or add a button
+2:15
+that copies the message to your clipboard
+2:18
+so you can easily email it to friends
+2:20
+or even redesign the entire color scheme
+2:22
+to better match your style.
+2:25
+After having built a basic app,
+2:26
+you can then make the app yours
+2:28
+by deciding what features you want to add.
+2:31
+So you might continue the chat conversation
+2:33
+by telling the AI to make it have five
+2:36
+clearly labeled inputs, name, age, hobby,
+2:40
+an adjective, and a plural noun,
+2:41
+and it'll update the app to look like this.
+2:44
+And notice that I'm writing
+2:46
+very specific instructions here.
+2:48
+I'm not just saying make it have five fields,
+2:50
+I'm telling it what are the five fields I want it to have.
+2:53
+Or if I add an I'm Feeling Lucky button,
+2:56
+again, I try to be specific in telling it
+2:58
+what I want the I'm Feeling Lucky button to do.
+3:01
+I want it to automatically fill in the blanks
+3:02
+with random words,
+3:03
+and I want the predefined word choices to be funny.
+3:06
+And here, I'm actually adding two features
+3:09
+at the same time.
+3:10
+I might update the titles and subtitles
+3:12
+and also add a button to copy across the clipboard.
+3:15
+So this is actually two of the bullets
+3:17
+from the previous slide that I'm adding at the same time.
+3:19
+And I actually like the color blue,
+3:21
+so let's make the color theme blue.
+3:23
+Feel free to try out these prompts yourself,
+3:26
+or even better, pick a different color theme,
+3:29
+or tell it to implement any other idea that you have.
+3:32
+If you like pink, like my daughter does,
+3:34
+or green, like my son does,
+3:36
+tell it to use a pink or green color theme instead,
+3:39
+or make some other changes
+3:40
+depending on what you feel like doing.
+3:41
+And if you ever change your mind, you can do that too.
+3:44
+So after I've made the color theme blue,
+3:46
+if I decide that I don't want it blue after all,
+3:49
+I actually want it to be purple,
+3:50
+you can write a prompt like that,
+3:51
+and the AI will obediently change it to purple.
+3:55
+Now, a lot of the time,
+3:57
+AI is pretty good at giving you
+4:00
+exactly what you ask it to do.
+4:02
+But sometimes there's a chance
+4:04
+to generate an HTML page that doesn't work.
+4:07
+In software, we call this a bug,
+4:09
+when there's something that doesn't quite work
+4:11
+the way it's supposed to.
+4:13
+Here's actually a broken version of an app
+4:16
+that AI generated for me earlier,
+4:19
+where I've typed in all of these fields,
+4:21
+but if I click Generate Card, nothing happens.
+4:24
+So that's kind of weird.
+4:25
+Here I'm clicking my mouse,
+4:26
+but it's not actually generating a card.
+4:28
+It turns out I'm feeling lucky it works,
+4:30
+but again, Generate Card doesn't generate any cards for me.
+4:33
+If that happens, what I'd encourage you to do
+4:36
+is to clearly tell the AI what happens.
+4:39
+So here I've typed,
+4:40
+nothing happens when I click on the Generate Card button.
+4:43
+Can you fix it for me?
+4:44
+And if you do that,
+4:46
+the AI is usually pretty good at finding
+4:49
+at least basic bugs and fixing whatever is wrong.
+4:53
+When you do this,
+4:54
+sometimes the AI will write some technical explanations
+4:57
+of what went wrong.
+4:58
+So here it says,
+4:59
+JavaScript was attached to the button.
+5:00
+Click event, boy, that's a lot of technical terminology.
+5:03
+I would say for now,
+5:04
+just don't worry about what the AI is saying here.
+5:06
+You don't need to understand these technical details.
+5:08
+If you're really curious, you can actually ask the AI,
+5:10
+what do these terms mean?
+5:12
+But you don't have to do that.
+5:13
+Let the AI do its thinking,
+5:15
+say what it wants about the technology,
+5:17
+and then focus on downloading the new HTML file
+5:20
+to see if that works.
+5:21
+I hope you will start with the basic birthday card app
+5:25
+and either try building the features
+5:28
+I suggested earlier in this video,
+5:29
+or some features that maybe your friends have suggested
+5:33
+or your own ideas.
+5:34
+And in fact, if you're not sure what else to do,
+5:37
+you can also ask the AI for ideas.
+5:39
+So if you ask it,
+5:40
+how can I make this birthday card app cool?
+5:42
+It may give a few suggestions
+5:44
+and then you could pick one or more
+5:46
+and use the AI's idea to make your app more cool.
+5:50
+I actually use AI as a brainstorming tool a lot
+5:53
+when I'm building software,
+5:55
+and you should do the same too
+5:57
+if you don't already have ideas that you're excited about.
+6:00
+Please go to the next item in this website
+6:02
+and have fun adding features or play with the color theme
+6:06
+or implement whatever you feel like.
+6:09
+When you come back,
+6:10
+we'll use the skills you've already learned
+6:11
+to build a second app, a ping pong game.

@@ -1,0 +1,780 @@
+0:00
+In the first lesson, Claude AI used the Excel skill
+0:02
+to create spreadsheets displaying the marketing results.
+0:06
+The Excel skill is one of Anthropic's pre-built skills,
+0:09
+which also include a PowerPoint, Word, and PDF skill,
+0:13
+as well as a skill creation skill.
+0:16
+Let's take a look at those.
+0:18
+Now that we've seen how skills fit in the entire AI ecosystem,
+0:21
+let's take a look at some of the pre-built skills
+0:24
+that you can use out of the
+0:27
+box with Claude AI and Claude Desktop,
+0:29
+and that you can install yourself with tools like Claude Code.
+0:32
+Inside of this repository that lives at
+0:35
+github.com/anthropic/skills.
+0:38
+Let's take a look at the skills folder
+0:40
+and see which built-in ones that we have.
+0:42
+All of these are ready for production usage.
+0:45
+And we actually saw in a previous lesson
+0:48
+the use case of this Excel skill.
+0:51
+It's important to note that this list of skills,
+0:53
+while created at Anthropic,
+0:55
+is actually bucketed into two different sections.
+0:58
+The skills for Microsoft Docs, PDFs,
+1:01
+Power Points, and Excel
+1:03
+are known as document skills.
+1:06
+These are built in and always used
+1:08
+in tools like Claude AI.
+1:10
+The remainder of these skills are examples that we've created
+1:13
+that you can toggle on and off in Claude,
+1:16
+but by default with the exception of skill-creator
+1:19
+are toggled off.
+1:20
+Let's first start by analyzing the PowerPoint skill.
+1:25
+We can see just like other structures
+1:27
+that we have a SKILL.md file
+1:30
+as well as other files and folders to reference.
+1:33
+Inside of this SKILL.md,
+1:36
+we have that same YAML Frontmatter
+1:39
+that includes the name and the description.
+1:41
+What you're seeing here is how GitHub is rendering this markdown file,
+1:46
+but the underlying code
+1:48
+looks very similar to what we've made before.
+1:51
+You can view it this way if you're familiar with markdown files.
+1:55
+I'll switch back to the preview
+1:56
+because it looks a little bit nicer.
+1:58
+When we take a look at how
+2:00
+this skill works and what it does,
+2:02
+We've got an overview.
+2:04
+The users may ask to create,
+2:06
+edit, analyze contents of a PowerPoint file.
+2:08
+Here's what it looks like, here's how you read it.
+2:11
+And if there are particular tasks that need to be done,
+2:14
+there are underlying scripts to go ahead and execute.
+2:18
+Remember, these are not executed right out of the box.
+2:22
+These are only loaded and executed when necessary.
+2:25
+There's quite a bit that we can do with PowerPoint presentations,
+2:28
+colors, typography, as you can imagine,
+2:31
+this is how we can start to make things that look nicer
+2:34
+and look more like real-world presentations out of the box.
+2:38
+There are design principles that we have, requirements that are necessary,
+2:42
+and color palette selections that we can have Claude pick from
+2:45
+when the user does not specify them.
+2:48
+This SKILL.md is quite long,
+2:50
+as there is quite a bit
+2:52
+that we can do with PowerPoint presentations.
+2:53
+But what we're going to see later in this lesson
+2:56
+is how to actually use this skill
+2:58
+to take existing data and turn it into
+3:00
+a beautiful looking presentation.
+3:03
+The next skill I want to show you
+3:05
+is a little bit of a meta idea here,
+3:07
+and that's called the skill-creator.
+3:09
+And the skill creator is a skill
+3:12
+that serves the purpose of programmatically creating skills for you.
+3:17
+Instead of having to do things from scratch
+3:19
+and create the necessary files and folder structure,
+3:22
+the skill creator can do that for you.
+3:25
+Let's take a look at the SKILL.md file
+3:27
+and see what's happening here.
+3:29
+Similar to our other skills, we have a name and a description.
+3:33
+And I'm actually going to take
+3:34
+a look at the underlying code here,
+3:35
+since it's a little bit easier to follow.
+3:38
+We specify in this SKILL.md file
+3:41
+what skill is, what it provides,
+3:44
+and then we include some of the best practices associated with skills.
+3:48
+We're going to dive into those best practices in the next lesson.
+3:52
+But you can imagine when Claude is programmatically creating skills for you,
+3:56
+we want to leverage some of these best practices.
+3:59
+When we take a look at the skill creation process,
+4:02
+we're extremely explicit with the steps that we have here.
+4:06
+Since we want to use this skill to create a predictable workflow,
+4:10
+we want to be extremely explicit with what the steps are,
+4:14
+how to follow them, and what
+4:16
+to skip only if some reason exists.
+4:19
+We start with concrete examples,
+4:21
+we plan reusable skill contents,
+4:23
+and here you can start to see examples
+4:26
+that are very helpful for Claude to pattern match
+4:29
+when there's a skill you'd like to create.
+4:32
+When we start initializing the skill,
+4:34
+here we're running underlying Python scripts
+4:37
+to perform the task necessary.
+4:39
+Let's take a look at what those scripts do.
+4:44
+Inside of the scripts folder, I have three Python files here.
+4:48
+A script to initialize the skill and provide the underlying text,
+4:53
+a Python file to package that skill,
+4:55
+and then a script to validate that skill.
+4:58
+Let's take a look at what this
+5:00
+underlying code does to initialize a skill.
+5:03
+We take an existing template that we have
+5:05
+with some YAML Frontmatter and some placeholders and to-dos,
+5:09
+and we fill that in based
+5:11
+on the data that is coming in.
+5:13
+This underlying script allows us to create
+5:16
+the necessary text files when making our skills.
+5:20
+Once we've generated the necessary files, we can package that up.
+5:24
+Here you can see we're bringing in the necessary modules
+5:27
+to zip our skill necessary
+5:29
+and make sure that we're doing this
+5:31
+in the right folder and file structure.
+5:33
+Finally, we have one last script
+5:35
+to perform a validation of our skill.
+5:38
+make sure that a SKILL.md exists,
+5:41
+validate some of the YAML Frontmatter,
+5:43
+and make sure that what we put
+5:45
+inside of our folder and files is correct.
+5:49
+We're going to be leveraging this skill-creator skill
+5:52
+to take existing content that we have
+5:54
+and package it up into a reusable and modular script.
+5:58
+Now let's go ahead and shift gears back to Claude
+6:01
+and see how to put together built-in skills,
+6:03
+our own skills, and a predictable workflow
+6:05
+with an MCP server.
+6:08
+Back in Claude, let's go and take a look
+6:11
+and make sure that we have the
+6:13
+correct skills enabled and where those live.
+6:16
+Back in settings, inside of capabilities.
+6:19
+We saw previously, we can create skills in this section.
+6:23
+What I want to show you
+6:24
+are the example skills that we have
+6:27
+and this should look pretty familiar.
+6:28
+This is what we saw on GitHub.
+6:30
+By default, these skills are turned off.
+6:33
+If we want to toggle them on, we can absolutely do so.
+6:36
+The skill that is toggled on by default
+6:39
+is the skill-creator that we just saw.
+6:42
+It's important to note that while the skill-creator
+6:44
+is extremely effective at creating
+6:47
+underlying skills and structure necessary,
+6:50
+we still have to be intentional about the prompt that we provide
+6:53
+and the data that goes in to
+6:55
+the skill that we're going to make.
+6:57
+What we're going to do now is
+6:59
+put all of these ideas around skills,
+7:02
+MCP, and prompting together.
+7:05
+First, we're going to modify our previous skill
+7:08
+that we created for analyzing campaigns.
+7:11
+to not use a CSV for data, but instead BigQuery.
+7:16
+If you're not familiar, BigQuery is a data store powered by Google,
+7:20
+and in order to bring in the
+7:22
+necessary tooling and context to work with BigQuery,
+7:25
+we're going to connect an MCP server.
+7:27
+So we're going to use the skill-creator skill
+7:30
+to modify our previous marketing analyzing skill to use BigQuery.
+7:35
+We're then going to use skill-creator to create another skill.
+7:39
+This will be for the purpose of brand guidelines.
+7:42
+We'll include a file that specifies the guidelines as well as logos,
+7:47
+and we'll build for ourselves another skill
+7:50
+to perform that task. Finally,
+7:52
+we'll take our two skills that we used
+7:55
+to extract and analyze data and to leverage brand guidelines
+7:59
+and combine them with a built-in skill
+8:02
+for creating PowerPoint presentations
+8:04
+to create a workflow that makes use of prompting,
+8:07
+skills, and the model context protocol.
+8:09
+Before we jump in, you might be wondering
+8:12
+where the Excel and PowerPoint
+8:14
+and other document skills that we saw before live.
+8:18
+These are built in to Claude AI.
+8:20
+and are not things that can be toggled on and off.
+8:23
+So with that in mind, let's start this workflow.
+8:26
+Before we modify our analyzing marketing campaign skill to use BigQuery,
+8:31
+Let's also make a note that we're using Claude desktop here
+8:35
+to connect to a local MCP server to leverage BigQuery.
+8:39
+So let's take a look at how that BigQuery server is configured.
+8:43
+I'm going to head over to Settings, Developer
+8:46
+And here, we can take a look
+8:49
+at the underlying command and arguments
+8:51
+and environment variables for the particular project
+8:53
+and where my credentials live.
+8:56
+For this example, we don't have to use BigQuery,
+8:59
+you can use a database, some external data store,
+9:02
+but we just want to showcase what it looks like
+9:04
+with skills and MCP servers working together.
+9:07
+And if you're interested in seeing that
+9:10
+underlying config file, here's what it looks like.
+9:13
+In this config file, we specify
+9:14
+the servers we want to connect to
+9:17
+and the underlying commands to run when Claude Desktop starts.
+9:21
+With that in mind, let's go ahead and modify
+9:24
+our previous skill to now use BigQuery
+9:27
+instead of CSVs for data access.
+9:31
+To make sure this is working correctly, let's first ask Claude
+9:35
+to list the tables in BigQuery that exist.
+9:42
+This is going to make use
+9:43
+of the MCP server that we have.
+9:45
+We're going to allow this and we
+9:47
+should get back the list of tables.
+9:49
+In this case, we only have one.
+9:53
+So here we can see there's a data set called marketing
+9:55
+that contains a single table.
+9:57
+Now we're going to ask Claude
+9:59
+to show me the schema of the table.
+10:04
+Hopefully Claude can pick up that small spelling mistake
+10:07
+and we should be in business. Here
+10:10
+we're specifying what the table looks like.
+10:13
+And this looks great. And we're
+10:14
+going to make use of this schema
+10:16
+when we go ahead and update our analyzing-marketing-campaign skill.
+10:21
+What we're going to do now is ask Claude to update
+10:24
+our analyzing-marketing-campaign skill
+10:26
+so that instead of a CSV upload, we pull from BigQuery.
+10:30
+We specify the data
+10:32
+from the BigQuery table, specifically the schema that we just saw above.
+10:36
+Since we're all in one single conversation,
+10:39
+Claude should have no problem taking
+10:40
+a look at what the schema is.
+10:42
+We're specifying some requirements for this,
+10:45
+and just like in our existing skill,
+10:46
+we want to make sure that the reference
+10:48
+to our budget reallocation rules does not get modified.
+10:52
+Like we spoke about earlier, the skill creator skill
+10:54
+is extremely helpful and efficient,
+10:56
+but we still need to give the context necessary.
+11:01
+Notice here, the first thing it's going to do is analyze
+11:03
+the necessary skill structure and use our skill creator skill
+11:07
+to modify the existing skill
+11:10
+and follow best practices.
+11:13
+We're going to go ahead now and create the updated skill
+11:17
+with a new SKILL.md file.
+11:20
+Here we can start to see something
+11:22
+that feels similar to our previous skill.
+11:25
+But instead adding BigQuery instead of CSV uploads.
+11:29
+Under the hood, we're using the file system and bash tools
+11:33
+to create the necessary file and folder structure for us.
+11:38
+What we can see here is instead
+11:40
+of using a CSV, we're using BigQuery
+11:43
+and we're following the best practice of
+11:45
+using MCP servers with skills where we specify
+11:48
+the server and the name of the tool.
+11:52
+The skill-creator is following best practices
+11:54
+to take our existing skill and modify it.
+11:58
+So as we instructed skill-creator,
+12:00
+when we specified our required input.
+12:02
+We're seeing this in practice right now.
+12:05
+It's best practice not to use an ambiguous date range
+12:08
+or the entire range, so we ask the user to clarify,
+12:11
+and when we show an example
+12:13
+of querying, we're specifying a date range.
+12:16
+So some of the tools and requirements that we put in
+12:19
+are being directly applied when we update this skill.
+12:22
+So our skill looks like it's in great shape.
+12:25
+In order to make sure this is saved to subsequent conversations,
+12:28
+let's go ahead and copy this skill.
+12:35
+Now we're going to shift gears and
+12:37
+create a new skill for brand guidelines
+12:38
+that we'll use alongside this skill
+12:42
+to create a compelling data-driven PowerPoint presentation.
+12:47
+So let's go ahead and start with a new chat
+12:49
+and we're going to ask Claude to create
+12:52
+a brand guideline skill from files that we upload.
+12:56
+The first thing I'm going to do is upload a file
+12:59
+with my brand guidelines as well as some logos
+13:02
+to be used in the presentation.
+13:05
+Before we go ahead and create this skill,
+13:07
+let me just show you what these brand guidelines look like.
+13:10
+I've got a color palette, supporting colors, typography.
+13:14
+Claude knows how to design things, but where skills really shine
+13:17
+are where you can tell Claude exactly
+13:20
+how you want things done for your company.
+13:22
+logos, colors, fonts, great example.
+13:26
+Now let's go ahead and create a skill from these files
+13:30
+that we can apply to future presentations and documents.
+13:33
+What we're going to see here is the skill creator skill
+13:37
+in action again.
+13:39
+We're leveraging the existing tooling and skills that we have
+13:42
+to use best practices as well as the guideline and logos
+13:46
+to make a skill that is repeatable and portable.
+13:50
+We're going to analyze other existing
+13:52
+skills to see what patterns they use
+13:54
+and make sure that this new skill we're creating
+13:57
+can complement them. And this is extremely valuable
+14:00
+since we're going to be using this with PowerPoint presentations.
+14:04
+Now that we have a good
+14:05
+idea of what needs to be done,
+14:07
+let's run that init_skill Python script that we saw before.
+14:11
+This will create the underlying skill,
+14:13
+and now we can start adding our assets
+14:15
+to the skill's assets folder.
+14:19
+We're going to start to see colors populate,
+14:22
+accent colors, fonts, typography.
+14:25
+And in a bit, we'll have a skill
+14:27
+that we can start adding to all future conversations
+14:29
+when there's design that we need done.
+14:33
+Our logos are being pulled in,
+14:35
+Word documents and PDFs are specified,
+14:37
+and presentation layouts are the way that we want them to be.
+14:41
+The skill creator has finished running.
+14:44
+And here we have a SKILL.md file that's been created,
+14:47
+following best practices with a name and a description,
+14:51
+as well as underlying folders
+14:53
+with the necessary data and logos that we need.
+14:56
+There's one more step we need to do
+14:58
+to make sure that this gets added to future conversations.
+15:02
+In order to make sure this is saved to subsequent conversations,
+15:06
+let's go ahead and copy this skill.
+15:10
+Once this is done, we should see this skill
+15:13
+in the list of skills that we've created.
+15:16
+Now that we've updated
+15:18
+our skill to move from CSVs to BigQuery,
+15:21
+and created a new skill for our brand guidelines,
+15:24
+let's combine that to build a workflow alongside the built-in
+15:27
+PowerPoint presentation skill
+15:30
+to first analyze our data
+15:32
+and then generate a presentation.
+15:34
+So we're going to first analyze our marketing data
+15:37
+for a different week in BigQuery
+15:39
+to see how each channel is doing.
+15:41
+And then based on that data,
+15:43
+generate a presentation with our brand guidelines.
+15:47
+Let's see what this looks like.
+15:49
+First, we're going to go ahead and read the relevant skill files.
+15:52
+This includes our marketing campaign analysis
+15:55
+and will include our BigQuery guidelines as well.
+15:59
+We're going to go ahead and make
+16:00
+sure we have the correct PowerPoint presentation skill
+16:02
+as well as our brand skill for styling.
+16:05
+Inside of the underlying PowerPoint presentation skill,
+16:08
+there's additional documentation for presentation creation.
+16:11
+First, we're going to go ahead and start with BigQuery.
+16:14
+We're going to query what's necessary.
+16:19
+We can take a look and
+16:21
+see the underlying SQL that's being written
+16:23
+and like we saw before, that date range that we're looking for.
+16:27
+Now that we have the data,
+16:29
+we're going to use these metrics to go ahead
+16:31
+and generate a PowerPoint presentation.
+16:33
+We're going to do so with the styling that we've advised
+16:36
+in our brand style and turn this into a PowerPoint presentation.
+16:39
+can see here the underlying CSS and HTML
+16:41
+being written for our slides.
+16:44
+And then we're going to lean into the built-in skill
+16:46
+for creating the underlying presentation.
+16:50
+Now that we've got the right HTML files,
+16:52
+let's go ahead and create our presentation.
+16:55
+Here we're using the native PowerPoint skill
+16:59
+and writing the necessary code to create the presentation.
+17:03
+We can see here even when there
+17:05
+are particular issues, the model will go back
+17:08
+edit anything necessary
+17:10
+and lean on the exact workflow,
+17:12
+not only for running code necessary,
+17:14
+but validating what needs to be done.
+17:17
+This ability that the model has to backtrack
+17:20
+and follow particular patterns
+17:21
+allows for us to create presentations
+17:24
+that don't come with built-in issues
+17:26
+that we need to immediately then correct.
+17:28
+So we're seeing that Claude's done its verification, the slides look great.
+17:32
+Now it's going to go ahead and generate that underlying PowerPoint presentation,
+17:36
+which I can open up in
+17:38
+Google Drive and use as Google Slides,
+17:40
+or I can download directly.
+17:42
+We can see here, I've got some really nice looking slides
+17:45
+with the colors, fonts, logos,
+17:48
+and everything that I want for my particular company.
+17:51
+We have our efficiency analysis, funnel analysis,
+17:54
+and the executive summary that highlights what
+17:56
+needs review and what's doing quite well.
+17:59
+I can download this presentation, I
+18:01
+can continue to build off of it,
+18:02
+and again, open it up in Google Drive to share with teammates.
+18:06
+I can continue prompting and working with this presentation.
+18:09
+But what we're seeing here is an underlying PowerPoint presentation
+18:12
+created from a built-in skill,
+18:14
+combined with two skills that we've made
+18:17
+alongside an MCP server
+18:19
+pulling in data from BigQuery.
+18:22
+In the next lesson, we'll explore some of the best practices
+18:25
+around creating skills and take a look at two other custom skills
+18:29
+that we create and see if we're following the best practices.

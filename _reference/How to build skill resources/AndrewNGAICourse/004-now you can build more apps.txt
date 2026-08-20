@@ -1,0 +1,60 @@
+0:00
+Using the skills you now have in prompting, let's build another app. This time, a ping-pong game.
+0:05
+Because of AI, it's now possible to go from an idea to a working app, sometimes in minutes.
+0:11
+One of the earliest video games in computer history was a game called Pong, which was
+0:16
+sort of a two-person ping-pong game, and that had taken the team weeks to build. But now,
+0:23
+thanks to AI, you can build something like this in minutes.
+0:26
+Let's apply the prompting techniques we learned. I'm going to start quickly and write a
+0:30
+moderately specific prompt and say, build me a table tennis game as a single HTML file,
+0:36
+use a place against computer, move the paddle to the arrow keys. And if you do that, you might get
+0:40
+a first version of the app that looks like this. I go, okay, that's a good start, but I want it
+0:45
+to add three difficulty levels and let the user specify the number of points required to win,
+0:51
+and also have it keep score. And this builds me a second version like that.
+0:57
+And this now looks like a fun game, but I want the graphics to be fancier. So I'm going to say,
+1:02
+make the playground green, paddle beige, ball white, and I'm going to tell it to
+1:06
+insert this image into the background. And so I end up with a game that looks like this.
+1:11
+And here is the game. It's actually pretty fun. The ball is bouncing back and forth. I could
+1:17
+actually play this for quite a long time, maybe longer than you'd actually want to watch me
+1:21
+playing it. But I hope you will have fun with this. As a reminder, being specific in how you
+1:27
+write your prompt gets you better results. And so you can look over the prompts I was using,
+1:33
+and it was fairly specific in a number of details, like the color, the points, and so on.
+1:38
+If you're not sure what to include in the prompt, think about the building blocks.
+1:42
+Do you want to specify the goal, the output, the input, the layout, the features,
+1:46
+as a set of things to consider including. And lastly, use your chatbot to iterate,
+1:51
+improve, and troubleshoot. You don't need to get it right the first time. You can tell what you
+1:55
+already know, what you already have in mind, see what you get, and then use that to further refine
+2:00
+what you tell the AI to do. I actually enjoy ping pong in real life. And now you can build
+2:05
+a game to play it also with your computer. Please go to the next learning item to give this a shot
+2:11
+yourself. And in addition, beyond building a birthday card generator or ping pong game,
+2:16
+if you have an idea for something else you want to try to build, give it a shot.
+2:20
+It may or may not work, but it's by practicing and exploring our ideas that all of us
+2:24
+get better at building things.

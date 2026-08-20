@@ -1,0 +1,122 @@
+0:00
+Welcome to this course on agent skills,
+0:02
+built in partnership with Anthropic and taught by returning instructor Elie Schoppik.
+0:06
+Skills give Claude Code and other agents new abilities to carry out tasks.
+0:10
+I'm thrilled to have Elie return to teach this.
+0:12
+Thank you, Andrew. I'm happy to be back
+0:14
+and work with you all on this one.
+0:15
+Skills are folders of instructions that extend
+0:18
+your agent's capabilities with specialized knowledge.
+0:21
+In this course, you'll learn how skills work,
+0:23
+learn best practices for creating them,
+0:26
+and build skills for different use cases
+0:28
+including coding and research and data analysis and more.
+0:32
+What's exciting about skills is they're now an open standard,
+0:34
+which means they have a standardized format that work with any
+0:37
+skills compatible agent.
+0:39
+So you can build your skills once
+0:41
+and deploy them across multiple agent products.
+0:43
+Any skill should include a SKILL.md markdown file,
+0:46
+which contains the skill's name, description, and main instructions.
+0:51
+The main instructions can also refer to other files
+0:53
+such as scripts, additional markdown files,
+0:56
+and assets such as templates and images.
+0:59
+skills are progressively disclosed to the agent,
+1:02
+which means that the skill's name and description
+1:05
+always live in your agent's context window,
+1:07
+but the agent does not load the rest of the instructions
+1:09
+into its context until a user request
+1:12
+matches the skill's description.
+1:14
+At that point, the agent might then additionally load
+1:17
+the reference and asset files if needed as well.
+1:20
+To use this skill, your agent needs a basic set of tools,
+1:23
+filesystem access to read and write
+1:25
+files and a bash tool to execute code.
+1:27
+And these tools enable your agent to execute whatever command a skill requires.
+1:32
+Your agent can combine skills with MCP and sub-agents
+1:34
+to create powerful, agentic workflows.
+1:37
+For example, it can use MCP to get data from external sources,
+1:40
+then rely on a skill to
+1:42
+know what to do with that data
+1:43
+or how to retrieve it efficiently.
+1:46
+It can also delegate tasks to a sub-agent with isolated context,
+1:49
+which can itself use skills for specialized knowledge.
+1:52
+In this course, we'll start with Claude AI,
+1:54
+where we'll create a skill for a marketing campaign
+1:57
+and combine it with the pre-built skills for Excel and PowerPoint.
+2:01
+Then, we'll create two skills for content creation and data analysis workflows
+2:05
+and try them with the Claude API.
+2:07
+After that, we'll use skills with
+2:09
+Claude code for reviewing and testing code.
+2:11
+And finally, we'll build a research agent with the Claude agent SDK
+2:15
+that uses a skill to combine research results.
+2:18
+I'd like to thank Hawraa Salami from DeepLearning.AI
+2:20
+who contributed to this course.
+2:23
+So, how do you know when to use a skill?
+2:26
+Let's say you have a workflow that
+2:28
+you repeatedly ask your agent to implement.
+2:30
+Instead of explaining the same workflow every time,
+2:33
+you can package it as a skill so your agent
+2:36
+automatically knows what to do.
+2:38
+That's exactly what you'll learn with Elie in the first lesson.
+2:42
+So, please go on to the next video to learn more

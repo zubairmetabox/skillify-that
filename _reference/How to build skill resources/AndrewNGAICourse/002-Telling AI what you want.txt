@@ -1,0 +1,472 @@
+0:00
+The easiest way to create software in the AI era is no longer to type out code yourself.
+0:05
+Instead, you should tell AI to do it for you.
+0:09
+Telling AI what to do is called prompting.
+0:13
+When given precise instructions, AI can do a lot of things for you.
+0:17
+What I want to do in this video is share with you some best practices
+0:21
+for prompting AI to create software for you.
+0:25
+First, we'll walk through an example together.
+0:27
+Then, you try yourself using any AI chat system,
+0:30
+like ChatGV, Gemini, Cloud, or the one built right into this website.
+0:35
+To use any of these AI systems, you give it a prompt or set of instructions like this.
+0:41
+To tell it to create a webpage to help me write birthday cards,
+0:44
+and when I give a person's name, age, and hobby, it should give me back a funny message.
+0:48
+And if you do this, it might actually generate an app that looks like this, which is a good start.
+0:53
+You can enter the name, age, and hobby, and it generates an okay message like this.
+0:59
+But if you're unsatisfied with this, you might then continue the conversation with AI and say,
+1:04
+make it prettier by adding a festive title and colors.
+1:07
+And this would give you a second version of the app that now looks a bit better.
+1:11
+And if you're still unsatisfied, you might say, display the color on the right side,
+1:15
+make it look inside the birthday card, and get back a third version.
+1:18
+And if you have ideas to make it even better,
+1:22
+you could give it more instructions like add a fun title at the top, and so on.
+1:26
+This is how I actually work in practice when using AI to write code for me.
+1:30
+I often start off with a basic set of instructions and see what I get,
+1:34
+and I repeatedly tell the AI how I want to improve it.
+1:38
+It turns out that when you're building software applications,
+1:41
+there's a number of basic building blocks you might end up including in the prompt.
+1:45
+One thing I often include is the goal.
+1:48
+So here are the goals to create a webpage to help me write birthday cards.
+1:50
+Another thing you might include is to specify what is the input.
+1:54
+That is, what does the user have to tell the software?
+1:58
+This is us telling the software what we want it to output, as well as the layout.
+2:04
+So what's on the left? What's on the right?
+2:05
+How do you arrange the different parts of this app?
+2:09
+And lastly, any special instructions for additional features you wanted to include.
+2:14
+There are many ways to write good prompts,
+2:16
+but as you start your journey of telling AI to build software for you,
+2:19
+I encourage you to consider these five building blocks
+2:23
+as common pieces that you might choose to include in the prompt.
+2:28
+That is, the goal, namely what you want to create,
+2:31
+what input the user will provide,
+2:33
+what is the layout of the software app,
+2:35
+what special features you wanted to have,
+2:37
+as well as what you want the software to output.
+2:40
+In a previous slide, we went through a back and forth process of me incrementally,
+2:45
+in four steps, adding to the instructions I gave the AI
+2:48
+to tell it what I wanted to do.
+2:50
+But if you already know in advance more or less what you wanted to build,
+2:54
+you can also specify all of the building blocks in a single prompt.
+2:58
+For example, if I already knew the specification I want for the software,
+3:03
+I could write a single, much longer prompt like this
+3:05
+to create a webpage to help me write birthday cards,
+3:09
+whatever person's name, age and hobby,
+3:11
+you have a fight message, you specify their colors, and so on.
+3:14
+And in this example, I've taken all five building blocks
+3:17
+and written them all into a single, much longer prompt.
+3:21
+So instead of building things step by step, like you saw in the last video,
+3:26
+you can also give it all the instructions in a single, longer prompt,
+3:30
+and that might give you a better first version of your app,
+3:33
+which you can then further refine if it's still not quite what you want.
+3:37
+Now, whether you're writing a single, long prompt all at once,
+3:40
+or whether you're giving it one building block incrementally,
+3:43
+one piece at a time,
+3:44
+I will often start by telling the AI what is my goal,
+3:48
+and then of the remaining building blocks,
+3:50
+there are multiple ways to put them together,
+3:52
+and you don't have to use all the building blocks every time,
+3:55
+and the order is also not very important.
+3:57
+Start to the goal and tell the input-output layout,
+4:00
+and maybe not list any special features.
+4:02
+Or you might put the building blocks together this way,
+4:05
+and it could work fine.
+4:06
+Or you might list out the building blocks in a different order,
+4:09
+and the AI is usually pretty good at understanding
+4:11
+these different rearrangements of the building blocks.
+4:14
+And if you're feeling like, boy, this is a lot,
+4:17
+I would say don't worry about it.
+4:18
+If you just tell the AI whatever's on your mind,
+4:21
+even if it's partial and imperfect,
+4:23
+you can then work and go back and forth with the AI a few times
+4:27
+to hone it towards something that you want together with the AI.
+4:31
+One of the skills you hone over time
+4:33
+is the ability to give AI more specific instructions,
+4:37
+because it turns out that the results you get may vary
+4:40
+even if you give fairly specific prompts.
+4:43
+So here's a long detail prompt that you saw just now,
+4:46
+specifying all of the five building blocks.
+4:48
+And if you give these same instructions
+4:51
+to the same AI system multiple times,
+4:53
+maybe one time we'll give an app that looks like this,
+4:55
+which is pretty nice,
+4:56
+and maybe a second time we'll build something like that,
+4:58
+and the third time we'll build something like that.
+5:00
+And all of these look pretty good.
+5:01
+We can see that there's some variation among them.
+5:03
+In contrast, if someone were to give a much less specific prompt,
+5:08
+a much less clear prompt,
+5:09
+so it's a very short prompt that just says,
+5:10
+create a webpage to help me write birthday cards.
+5:12
+Because these are relatively vague prompts,
+5:14
+the results you get if you run this multiple times
+5:17
+through an AI system,
+5:18
+maybe once you get this,
+5:19
+a second time you get this,
+5:20
+which looks totally different with different fields,
+5:23
+and a third time you would get this,
+5:25
+which again looks totally different than the first two times.
+5:28
+The more specific and the more precise the prompts you write,
+5:32
+the more predictable will be the results.
+5:35
+But even then, there'll be a little bit of variability.
+5:37
+So if you get results that are a little bit different
+5:40
+than what I show in this video,
+5:41
+don't worry about it.
+5:42
+That's a normal cause of how AI systems behave.
+5:45
+But if it surprises you with something you really don't like,
+5:47
+that's okay too.
+5:48
+Just give it additional instructions to steer
+5:51
+or to move the AI closer to whatever you do want it to do.
+5:54
+The best way to learn this is to put your hands on your keyboard
+5:57
+and to try using AI yourself.
+5:59
+Let me show you what it'll look like.
+6:02
+What I'd like you to do after this video
+6:03
+is go to this section on the website
+6:06
+and go through this exercise yourself.
+6:08
+So the instructions here that you can read later,
+6:10
+but this is an AI system
+6:12
+similar to ChagGV and Gemini and Cloud and so on.
+6:16
+And I'm going to select and then copy
+6:21
+and paste the first prompt here
+6:23
+where it tells the AI to create a webpage,
+6:25
+tell me to write birthday cards and so on.
+6:28
+And I'm going to hit this to send it to the AI.
+6:31
+So here, it'll think for a little bit
+6:33
+and then it will generate an HTML page
+6:36
+that it can then download and run.
+6:38
+Notice while it's still running
+6:39
+that this download button here is grayed out
+6:41
+so I can't actually click on it yet.
+6:44
+But the AI system will take just a little bit of time
+6:47
+to write something called an HTML page.
+6:50
+This is what webpages are made of
+6:52
+that will be this birthday card generator.
+6:56
+Now that the AI has finished generating
+6:58
+all of this HTML code,
+7:00
+I can click this download button
+7:02
+and here I'm running Chrome on a Mac.
+7:05
+I'll show you later what to do
+7:06
+if you're on a different machine.
+7:07
+And I can go to this downloaded menu here
+7:11
+and open up file.html
+7:13
+and this has created a little birthday card generator.
+7:17
+So here's Karen 27
+7:21
+and I can create a simple birthday message.
+7:24
+Not bad.
+7:25
+And notice that this is actually a piece of code
+7:29
+written in HTML
+7:31
+that is running on your computer right now
+7:35
+if you were to do this yourself.
+7:37
+The code is in this file called file.html
+7:41
+and it's actually saved to my computer right now.
+7:44
+And if you do this, it will be saved to your computer.
+7:47
+Now, if you want to improve the code,
+7:50
+you can then prompt it,
+7:52
+add a festive title and colors
+7:53
+and then it updates the code.
+7:55
+Same as before,
+7:56
+I have to wait until it's finished writing the code.
+7:59
+I can download it
+8:01
+and now I can download it
+8:02
+and same as before, open it.
+8:05
+Oh, wow.
+8:06
+Now it looks much more festive.
+8:08
+And so what I'd like you to do is
+8:10
+try it out for yourself.
+8:11
+You can add this third prompt,
+8:13
+run it, add this fourth prompt
+8:15
+or try some other prompts if you feel so inclined.
+8:18
+But it's also fine to use just these four prompts
+8:21
+one at a time
+8:22
+and see what birthday card generator you get
+8:25
+out of this process.
+8:26
+Even though I'm showing you this process on the website,
+8:29
+these same prompts should give you similar results
+8:31
+on OpenAI's ChatterGPT,
+8:33
+Google's Gemini,
+8:34
+Anthropics Cloud
+8:35
+or any other popular AI system.
+8:37
+What you're learning isn't tied to any one platform
+8:40
+and these skills apply to any AI system you choose to use.
+8:43
+When you click the download button,
+8:44
+your web browser will usually download the file.html
+8:49
+or whatever the file the AI generated with the code
+8:53
+to your downloads folder.
+8:55
+So these videos show you how you can navigate
+8:59
+on either Windows or Mac
+9:01
+to the downloads folder
+9:03
+to find that file
+9:04
+and then if you double click on it,
+9:07
+it should open up in a web browser
+9:09
+and let you see what the code you just generated
+9:12
+looks like when it runs in your web browser.
+9:15
+Please try this out.
+9:17
+After you try out this process
+9:18
+and generate a web app,
+9:21
+one mindset I hope you have
+9:23
+is that giving feedback
+9:25
+is often a great step in building software applications.
+9:29
+Whenever I write software,
+9:30
+I'll often show it to friends,
+9:32
+show it to family
+9:33
+or sometimes respectfully approach strangers
+9:36
+and ask if they're willing to look at whatever I'm building
+9:38
+and see if they can let me know what they think
+9:40
+or email it to a colleague
+9:42
+or post it on my forum to get feedback
+9:44
+because I find that when people look at it,
+9:47
+they often have suggestions
+9:49
+for how to make it even better
+9:50
+or sometimes if you get a laugh,
+9:54
+by showing them something funny,
+9:55
+I find that really encouraging as well
+9:57
+and gives me the energy to keep on going.
+10:00
+So what I'd like you to do now
+10:01
+is go into the next item in this course
+10:04
+and try it out yourself.
+10:05
+Get AI to generate some code for you
+10:08
+and download the HTML file
+10:10
+and see what results you get.
+10:12
+If you feel so moved,
+10:14
+I hope you also show it to a friend
+10:16
+or show it to someone else to get their feedback.
+10:18
+After that,
+10:19
+please come back to the next video
+10:21
+where we'll keep on working on the app
+10:24
+and we'll look at how you can add even more features
+10:26
+to the Berkeley Cloud App
+10:27
+to make it even more fun and interesting.
